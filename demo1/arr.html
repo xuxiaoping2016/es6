@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <base href="/" />
+        <meta charset="utf-8">
+        <!-- <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"> -->
+        <meta name="viewport" content="width=device-width, initial-scale=1,minmum-scale=1,maxmum-scale=1,user-scalable=no">
+        <meta name="theme-color" content="#000000">
+        <meta name="format-detection" content="telephone=no" />
+        <title>全返商城</title>
+    </head>
+    <body>
+        <script type="text/javascript">
+            // var arr = [1,,3,4,,5,undefined,null,false,0,NaN,2,3,4];
+
+            // var arr2 =[];
+            // arr.forEach(function(val,index){
+            //     if(index in arr)  arr2.push(val);
+            // })
+
+            // var arr2 = arr.filter(function(val,index){
+            //     console.log(index)
+            //    return index in arr;
+            // })
+
+            //map方法跳过空值，但会保留原有数组下标，  
+
+            // var arr2 = arr.map(function(val,index){
+            //     console.log(index, index in arr)
+            //    if(index in arr) return val;
+            // })
+
+            // arr2.forEach(function(val,index){
+            //     console.log('index',index)
+            // })
+
+            // console.log(arr2, arr2.length)
+
+
+
+            var obj = {
+                'name':'xuxiaoping',
+                'age':14,
+                'home':'dfjdfjdl'
+            }
+            // console.log(Object.keys(obj));
+            var keys = []
+            for (var key in obj){
+                keys.push(key)
+            }
+            console.log(keys)
+        </script>
+    </body>
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <base href="/" />
+        <meta charset="utf-8">
+        <!-- <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"> -->
+        <meta name="viewport" content="width=device-width, initial-scale=1,minmum-scale=1,maxmum-scale=1,user-scalable=no">
+        <meta name="theme-color" content="#000000">
+        <meta name="format-detection" content="telephone=no" />
+        <title>全返商城</title>
+    </head>
+    <body>
+        <script type="text/javascript">
+            class Functor {
+                constructor(value){
+                    this.value = value;
+                }
+                map(fn, ...rest) {
+                    return new Functor(fn(this.value, ...rest));
+                }
+            }
+
+            var obj = new Functor('name');
+
+            function fn(val,...rest){
+                console.log(rest)
+                return [...val,...rest];
+            }
+            var obj2 = obj.map(fn,1,2,3,4);
+            var obj3 = obj2.map(fn,'a','b')
+            console.log(obj);
+            console.log(obj2)
+            console.log(obj3)
+        </script>
+    </body>
+</html>
