@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <base href="/" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+    <meta name="theme-color" content="#000000">
+    <meta name="format-detection" content="telephone=no" />
+    <title>字符串的 Iterator 接口</title>
+</head>
+
+<body>
+    <script type="text/javascript">
+        //================================================================
+        // function* helloWorldGenerator() {
+        //     yield 'hello';
+        //     yield 'world';
+        //     return 'ending';
+        // }
+
+        // var hw = helloWorldGenerator();
+        // console.log(hw.next())
+        // console.log(hw.next())
+        // console.log(hw.next())
+
+        //================================================================
+        // function* gen() {
+        //     // some code
+        // }
+
+        // var g = gen();
+
+        // console.log(g);
+        // console.log(g[Symbol.iterator]() === g)
+
+        //================================================================
+        // function* f() {
+        //     for (var i = 0; true; i++) {
+        //         console.log("reset before",reset)
+        //         var reset = yield i;
+        //         console.log("reset",reset)
+        //         if (reset ==2) {
+        //             i = 7;
+        //         }
+
+        //         if (reset == 8) {
+        //             i = 10;
+        //         }
+        //     }
+        // }
+
+        // var g = f();
+
+        // console.log(g.next()) // { value: 0, done: false }
+        // console.log('---------------------------')
+        // console.log(g.next()) // { value: 1, done: false }
+        // console.log('---------------------------')
+        // console.log(g.next(2))
+        // console.log('---------------------------')
+        // console.log(g.next(8))
+
+        //================================================================
+        // function* foo(x) {
+        //     var y = 2 * (yield(x + 1));
+        //     var z = yield(y / 3);
+        //     return (x + y + z);
+        // }
+
+        // var a = foo(5);
+        // a.next() // Object{value:6, done:false}
+        // a.next() // Object{value:NaN, done:false}
+        // a.next() // Object{value:NaN, done:true}
+
+        // var b = foo(5);
+        // b.next() // { value:6, done:false }
+        // b.next(12) // { value:8, done:false }
+        // b.next(13) // { value:42, done:true }
+
+        //================================================================
+        // function* dataConsumer() {
+        //     console.log('Started');
+        //     console.log(`1. ${yield}`);
+        //     console.log(`2. ${yield}`);
+        //     return 'result';
+        // }
+
+        // let genObj = dataConsumer();
+        // genObj.next();
+        // // Started
+        // genObj.next('a')
+        // // 1. a
+        // genObj.next('b')
+        // // 2. b
+
+        //================================================================
+        function wrapper(generatorFunction) {
+            return function (...args) {
+                let generatorObject = generatorFunction(...args);
+                generatorObject.next();
+                return generatorObject;
+            };
+        }
+
+        const wrapped = wrapper(function* () {
+            console.log(`First input: ${yield}`);
+            return 'DONE';
+        });
+
+        wrapped().next('hello!')
+        // First input: hello!
+        //================================================================
+
+
+
+        //================================================================
+    </script>
+</body>
+
+</html>
