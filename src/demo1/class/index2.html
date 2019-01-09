@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <base href="/" />
+    <meta charset="utf-8">
+    <meta name="theme-color" content="#000000">
+    <meta name="format-detection" content="telephone=no" />
+    <title>class的继承</title>
+</head>
+
+<body>
+    <script type="text/javascript">
+        class Point {
+
+        }
+
+        class ColorPoint extends Point {
+            constructor(x, y, color) {
+                super(x, y); // 调用父类的constructor(x, y)
+                this.color = color;
+            }
+
+            toString() {
+                return this.color + ' ' + super.toString(); // 调用父类的toString()
+            }
+        }
+
+        // const p = Object.getPrototypeOf(ColorPoint);
+        // console.log(p)
+        // console.log(Point)
+        // console.log(p === Point)
+        // console.log(ColorPoint)
+
+
+        // ==================================================
+        // class A {
+        //     constructor() {
+        //         console.log(new.target.name);
+        //     }
+        // }
+        // class B extends A {
+        //     constructor() {
+        //         super();
+        //     }
+        // }
+        // new A() // A
+        // new B() // B
+
+
+        // ======================================
+
+            class A {
+                constructor() {
+                    this.p = 2;
+                }
+            }
+
+            class B extends A {
+                constructor(props){
+                    super(props)
+                }
+                get m() {
+                    return super.p;
+                }
+            }
+
+            let b = new B();
+           console.log( b.m,b.p) // undefined
+           
+
+        // ========================================================
+
+        // class A {
+        //     constructor() {
+        //         this.x = 1;
+        //     }
+        // }
+
+        // class B extends A {
+        //     constructor() {
+        //         super();
+        //         this.x = 2;
+        //         super.x = 3;
+        //         console.log(super.x); // undefined
+        //         console.log(this.x); // 3
+        //     }
+        // }
+
+        // let b = new B();
+
+
+        // ====================================================
+        // class Parent {
+        //     static myMethod(msg) {
+        //         console.log('static', msg);
+        //     }
+
+        //     myMethod(msg) {
+        //         console.log('instance', msg);
+        //     }
+        // }
+
+        // class Child extends Parent {
+        //     static myMethod(msg) {
+        //         super.myMethod(msg);
+        //     }
+
+        //     myMethod(msg) {
+        //         super.myMethod(msg);
+        //     }
+        // }
+
+        // Child.myMethod(1); // static 1
+
+        // var child = new Child();
+        // child.myMethod(2); // instance 2
+
+
+        // ===================================
+
+        function mix(...mixins) {
+            class Mix {}
+
+            for (let mixin of mixins) {
+                copyProperties(Mix.prototype, mixin); // 拷贝实例属性
+                copyProperties(Mix.prototype, Reflect.getPrototypeOf(mixin)); // 拷贝原型属性
+            }
+
+            return Mix;
+        }
+
+        function copyProperties(target, source) {
+            for (let key of Reflect.ownKeys(source)) {
+                if (key !== "constructor" &&
+                    key !== "prototype" &&
+                    key !== "name"
+                ) {
+                    let desc = Object.getOwnPropertyDescriptor(source, key);
+                    Object.defineProperty(target, key, desc);
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>

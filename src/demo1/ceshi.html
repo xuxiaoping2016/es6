@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <base href="/" />
+        <meta charset="utf-8">
+        <!-- <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"> -->
+        <meta name="theme-color" content="#000000">
+        <meta name="format-detection" content="telephone=no" />
+        <title>全返商城</title>
+    </head>
+    <body>
+        <script type="text/javascript">
+            
+           function F(){
+
+           }
+
+           F.prototype.say = function(){
+               console.log("a")
+           }
+
+           var obj = new F();
+           var obj2 = new Object()
+           var obj3 = {
+               name:"4"
+           }
+
+            var p = Object.getPrototypeOf(obj)
+            var p2 = Object.getPrototypeOf(obj2)
+            var p3 = Object.getPrototypeOf(obj3)
+
+           console.log(p, p == Object.prototype)
+           console.log(p2, p2 == Object.prototype)
+           console.log(p3, p3 == Object.prototype)
+        </script>
+    </body>
+</html>

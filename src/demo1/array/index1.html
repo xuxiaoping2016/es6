@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <base href="/" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+    <meta name="theme-color" content="#000000">
+    <meta name="format-detection" content="telephone=no" />
+    <title>数组的扩展</title>
+</head>
+
+<body>
+    <div id="container"></div>
+    <script type="text/javascript">
+        //  一、扩展运算符
+        //  1、扩展运算符（spread）是三个点（...），将一个数组转为用逗号分隔的参数序列。
+        //  扩展运算符后面还可以放置表达式。  ...(x > 0 ? ['a'] : [])
+        // 替代函数的 apply 方法
+
+        // 2、应用  
+        // 2.1克隆数组，
+        // 2.2合并数组
+        // 2.3与解构赋值结合 扩展运算符可以与解构赋值结合起来，用于生成数组，
+        //     如果将扩展运算符用于数组赋值，只能放在参数的最后一位，否则会报错
+        //     const [...butLast, last] = [1, 2, 3, 4, 5];// 报错
+        //     const [first, ...middle, last] = [1, 2, 3, 4, 5]; // 报错
+        // 2.4 字符串  能够正确识别四个字节的 Unicode 字符
+        //     const oContainer = document.getElementById("container");
+        //     const str = 'x\uD83D\uDE80y';
+        //     console.log(str.length)
+        //     const arr = str.split('')
+        //     console.log(arr)
+        //     console.log([...str])
+        // 2.5 实现了 Iterator 接口的对象，都可以用扩展运算符转为真正的数组。
+        // 2.6 Map 和 Set 结构，Generator 函数
+
+        //================================================================
+
+        // 二、Array.from()
+        // Array.from方法用于将两类对象转为真正的数组：类似数组的对象（array-like object）
+        // 和可遍历（iterable）的对象（包括 ES6 新增的数据结构 Set 和 Map）。
+
+        // 扩展运算符背后调用的是遍历器接口（Symbol.iterator），如果一个对象没有部署这个接口，就无法转换。
+        // Array.from方法还支持类似数组的对象。所谓类似数组的对象，本质特征只有一点，即必须有length属性。
+        // 因此，任何有length属性的对象，都可以通过Array.from方法转为数组，而此时扩展运算符就无法转换。
+
+        // 三、Array.of() ;是弥补数组构造函数Array()的不足。因为参数个数的不同，会导致Array()的行为有差异。
+
+        // 四、数组实例方法  
+        // copyWithin()
+        // 五、数组实例的 find() 和 findIndex()
+        // 1、find()数组实例的find方法，用于找出第一个符合条件的数组成员。
+        // 它的参数是一个回调函数，所有数组成员依次执行该回调函数，直到找出第一个返回值为true的成员，然后返回该成员。
+        // 如果没有符合条件的成员，则返回undefined
+
+        // 2、数组实例的findIndex方法的用法与find方法非常类似，
+        // 返回第一个符合条件的数组成员的位置，如果所有成员都不符合条件，则返回-1
+
+        // 另外，这两个方法都可以发现NaN，弥补了数组的indexOf方法的不足。(这一点特别重要)
+        // [NaN].indexOf(NaN)
+        // // -1
+        // [NaN].findIndex(y => Object.is(NaN, y))
+        // // 0
+        // 上面代码中，indexOf方法无法识别数组的NaN成员，但是findIndex方法可以借助Object.is方法做到。
+
+        // 六、数组实例的 fill()
+        // fill方法使用给定值，填充一个数组,fill方法还可以接受第二个和第三个参数，用于指定填充的起始位置和结束位置。
+        // 注意，如果填充的类型为对象，那么被赋值的是同一个内存地址的对象，而不是深拷贝对象。
+        // let arr = new Array(3).fill({name: "Mike"});
+        // arr[0].name = "Ben";
+        // console.log(arr)
+
+        // 七、数组实例的 entries()，keys() 和 values()
+        // ES6 提供三个新的方法——entries()，keys()和values()——用于遍历数组。
+        // 它们都返回一个遍历器对象（详见《Iterator》一章），可以用for...of循环进行遍历，
+        // 唯一的区别是keys()是对键名的遍历、values()是对键值的遍历，entries()是对键值对的遍历。
+
+        //八、数组实例的 includes()
+        // Array.prototype.includes方法返回一个布尔值，表示某个数组是否包含给定的值，
+        // 与字符串的includes方法类似
+
+        // indexOf方法有两个缺点，一是不够语义化，它的含义是找到参数值的第一个出现位置，所以要去比较是否不等于-1，表达起来不够直观。
+        // 二是，它内部使用严格相等运算符（===）进行判断，这会导致对NaN的误判。
+
+//         另外，Map 和 Set 数据结构有一个has方法，需要注意与includes区分。
+
+// Map 结构的has方法，是用来查找键名的，比如Map.prototype.has(key)、WeakMap.prototype.has(key)、Reflect.has(target, propertyKey)。
+// Set 结构的has方法，是用来查找值的，比如Set.prototype.has(value)、WeakSet.prototype.has(value)。
+
+
+        var  contains = (function(){
+            return Array.prototype.includes ?
+            function(arr, value){ return arr.includes(value)} :
+            function(arr, value){
+                return arr.some(function(el){
+                    if(isNaN(el)) return isNaN(value)
+                    return el === value
+                })
+            }
+        })();
+
+        const arr = ['foo', 'bar',NaN,0];
+        console.log(contains(arr, -0)); // => false
+        console.log(contains(arr, NaN));
+
+        //================================================================
+
+
+
+        //================================================================
+
+
+        //================================================================
+
+
+
+        //================================================================
+
+        //================================================================
+
+
+
+        //================================================================
+    </script>
+</body>
+
+</html>

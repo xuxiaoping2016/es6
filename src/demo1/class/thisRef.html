@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <base href="/" />
+    <meta charset="utf-8">
+    <meta name="theme-color" content="#000000">
+    <meta name="format-detection" content="telephone=no" />
+    <title>class语法-this指向</title>
+</head>
+
+<body>
+    <script type="text/javascript">
+    console.log('this',this)
+        // 8、this指向
+        // class Logger {
+        //     printName(name = 'there') {
+        //         console.log(this)
+        //         this.print(`Hello ${name}`);
+        //     }
+        //     print(text) {
+        //         console.log(text);
+        //     }
+        // }
+
+        // const logger = new Logger();
+        // const {
+        //     printName
+        // } = logger;
+        // printName(); // this 是undefined 报错， 文档中解释有误
+
+
+
+//==========================================================================
+        // function L(){
+
+        // }
+        // L.prototype.printName = function(name = 'there') {
+        //     console.log(this)  
+        //     this.print(`Hello ${name}`);
+        // }
+        // L.prototype.print = function(text) {
+        //     console.log(text);
+        // }
+
+        // const m = new L();
+        // const {
+        //     printName
+        // } = m;
+        // printName();  //this 指向window
+
+
+    function selfish (target) {
+        const cache = new WeakMap();
+        const handler = {
+            get (target, key) {
+                const value = Reflect.get(target, key);
+                if (typeof value !== 'function') {
+                    return value;
+                }
+                if (!cache.has(value)) {
+                    cache.set(value, value.bind(target));
+                }
+                return cache.get(value);
+            }
+        };
+        const proxy = new Proxy(target, handler);
+        return proxy;
+    }
+
+    const logger = selfish(new Logger());
+
+    </script>
+</body>
+
+</html>

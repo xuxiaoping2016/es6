@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <base href="/" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+    <meta name="theme-color" content="#000000">
+    <meta name="format-detection" content="telephone=no" />
+    <title>Symbol</title>
+</head>
+
+<body>
+    <script type="text/javascript" src="F:\mywork\es6\demo1\func\data\data.js"></script>
+    <script type="text/javascript">
+
+        
+        // console.log(areas)
+        function tranverse(treeData, format = {}) {
+            const { children = 'children' } = format;
+            return function(processer) {
+                const stock = [...treeData];
+                console.log("stock",stock);
+                // debugger;
+                let current = null;
+                while ((current = stock.pop())) {
+                    console.log(current)
+                    // debugger;
+                    processer(current);
+                    const childs = current[children];
+                    console.log(childs)
+                    // debugger;
+                    if (childs && childs.length) {
+                        stock.push(...childs);
+                    }
+                }
+            };
+        }
+
+
+        function da(){
+            let data = areas.data || {};
+            data = data.firstAreaInfoVo || [];
+            const format = { children: 'children' };
+            tranverse(data, format)(item => {
+                item.label = item.areaName;
+                item.value = item.areaCode;
+            });
+            return data;
+        }
+
+        // const data = da()
+
+        function transform(data,key="children",interate){
+            let stock = [...data];
+            let current = null;
+            while(current = stock.pop()){
+                interate(current);
+                const childs = current[key];
+                if( childs && childs.length){
+                    stock.push(childs)
+                }
+            }
+        }
+
+        function dwr(){
+            let data = areas.data || {};
+            data = data.firstAreaInfoVo || [];
+            transform(data,"children",(item) => {
+                item.label = item.areaName;
+                item.value = item.areaCode
+            })
+            return data;
+        }
+
+        // console.log(dwr())
+        function s(data,key){
+            return function l(fn){
+                const len = data == undefined ? 0 : data.length;
+                if(!len) return [];
+                let i = -1;
+                while(++i < len){
+                    let current = data[i];
+                    console.log(fn)
+                    // fn(current)
+                    if(current.children && current.children.length){
+                        l(current.children)
+                    }
+                }
+            }
+        }
+
+        function mm(){
+            let data = areas.data || {};
+            data = data.firstAreaInfoVo || [];
+            s(data,"children")(f)
+            return data;
+        }
+
+        function f(item){
+            console.log(item)
+            item.label = item.areaName;
+            item.value = item.areaCode
+        }
+        // console.log(mm())
+    </script>
+</body>
+
+</html>

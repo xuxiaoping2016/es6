@@ -17,12 +17,34 @@
         // ES5 都可以做到，新的class写法只是让对象原型的写法更加清晰、更像面向对象编程的语法而已
         //     2、定义“类”的方法的时候，前面不需要加上function这个关键字，
         //     直接把函数定义放进去了就可以了。另外，方法之间不需要逗号分隔，加了会报错。
-        //     3、的内部所有定义的方法，都是不可枚举的（non-enumerable）
+        //     3、类的内部所有定义的方法，都是不可枚举的（non-enumerable）
         //     4、类的属性名，可以采用表达式
 
         // 3-1、类必须使用new调用，否则会报错。这是它跟普通构造函数的一个主要区别，后者不用new也可以执行。
 
         // 5-1Class 表达式
+
+//=================================================================================
+        // class MyClass1 {
+        //     constructor() {
+        //     }
+        //     get prop() {
+        //         return value;
+        //     }
+        //     set prop(value) {
+        //         console.log('setter: '+value);
+        //     }
+        // }
+
+        // let inst1 = new MyClass1();
+
+        // inst1.prop = 123;
+        // setter: 123
+
+        // console.log(inst1.prop)
+        // 'getter'
+
+//============================================
 
         const MyClass = class Me {
             getClassName() {
@@ -51,57 +73,6 @@
         // 6、不存在变量提升
 
         // 7、私有方法和私有属性 
-
-
-
-        // 8、this指向
-        class Logger {
-            constructor() {
-                // this.printName = this.printName.bind(this);
-                this.printName = (name = 'there') => {
-                    this.print(`Hello ${name}`);
-                }
-            }
-            // printName(name = 'there') {
-            //     this.print(`Hello ${name}`);
-            // }
-
-
-
-            print(text) {
-                console.log(text);
-            }
-        }
-
-        const logger = new Logger();
-        //结构赋值不仅可以结构对象自身属性还可以结构对象原型上的属性
-        const {
-            printName
-        } = logger;
-        // printName();  // Uncaught TypeError: Cannot read property 'print' of undefined
-
-
-
-        //使用Proxy
-        function selfish(target) {
-            const cache = new WeakMap();
-            const handler = {
-                get(target, key) {
-                    const value = Reflect.get(target, key);
-                    if (typeof value !== 'function') {
-                        return value;
-                    }
-                    if (!cache.has(value)) {
-                        cache.set(value, value.bind(target));
-                    }
-                    return cache.get(value);
-                }
-            };
-            const proxy = new Proxy(target, handler);
-            return proxy;
-        }
-
-        const logger2 = selfish(new Logger());
 
         // ----------------------------------
         // 9、name属性总是返回紧跟在class关键字后面的类名
@@ -133,36 +104,19 @@
         // console.log("set" in descriptor) // true
 
 
-        // class Foo {
-        //     static bar() {
-        //         console.log("static", this)
-        //         this.baz();
-        //     }
-        //     static baz() {
-        //         console.log('hello');
-        //     }
-        //     baz() {
-        //         console.log("obj", this)
-        //         console.log('world');
-        //     }
-        // }
 
-        // Foo.bar();
-
-        // var obj = new Foo();
-        // obj.baz();
 
 
         // ==================
-        class Foo {
+        // class Foo {
             // 写法一
-            prop = 2
+            // prop = 2
 
             // 写法二
             // static prop: 2
-        }
+        // }
 
-        console.log(Foo.prop)
+        // console.log(Foo.prop)
         // const obj2 = new Foo();
         // console.log(obj2, obj2.prop)
     </script>
