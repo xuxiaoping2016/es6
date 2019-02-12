@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <base href="/" />
+        <meta charset="utf-8">
+        <!-- <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"> -->
+        <meta name="theme-color" content="#000000">
+        <meta name="format-detection" content="telephone=no" />
+        <title>proxy</title>
+    </head>
+    <body>
+        <script type="text/javascript">
+            // var obj = new Proxy({}, {
+            //     get: function (target, key, receiver) {
+            //         console.log("get",target, key, receiver)
+            //         console.log(`getting ${key}!`);
+            //         return Reflect.get(target, key, receiver);
+            //     },
+            //     set: function (target, key, value, receiver) {
+            //         console.log("set",target, key, value, receiver)
+            //         console.log(`setting ${key}!`);
+            //         return Reflect.set(target, key, value, receiver);
+            //     }
+            // });
+
+            // obj.count =1;
+            // console.log(obj.count)
+
+//=====================================================================================
+            // function createArray(...elements){
+            //     const handler = {
+            //         get : function(target,propKey,receiver){
+            //             let index = Number(propKey);
+            //             if(index < 0){
+            //                 index = target.length + index;
+            //             }
+
+            //             return Reflect.get(target,index,receiver)
+            //         }
+            //     }
+
+            //     let target = []
+            //     target.push(...elements)
+            //     return new Proxy(target,handler)
+            // }
+
+            // const s = createArray("a","b","c")
+            // console.log(s[-1])
+
+            //====================================================================
+
+            var pipe = (function () {
+                return function (value) {
+                    var funcStack = [];
+                    var oproxy = new Proxy({} , {
+                        get : function (pipeObject, fnName) {
+                            if (fnName === 'get') {
+                                return funcStack.reduce(function (val, fn) {
+                                    return fn(val);
+                                },value);
+                            }
+                            funcStack.push(window[fnName]);
+                            return oproxy;
+                        }
+                    });
+
+                    return oproxy;
+                }
+            }());
+
+            var double = n => n * 2;
+            var pow    = n => n * n;
+            var reverseInt = n => n.toString().split("").reverse().join("") | 0;
+
+            pipe(3).double.pow.reverseInt.get; // 63
+        </script>
+    </body>
+</html>
