@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <base href="/" />
+        <meta charset="utf-8">
+        <meta name="theme-color" content="#000000">
+        <meta name="format-detection" content="telephone=no" />
+        <title>proxy2</title>
+    </head>
+    <body>
+        <script type="text/javascript">
+            // const safeGetter = (obj, keys = []) =>
+            //     new Proxy(() => {}, {
+            //         get: (target, key) => safeGetter(obj, keys.concat(key)),
+            //         apply: () =>
+            //             keys.reduce((prev, cur) => {
+            //                 if (prev && prev[cur]) {
+            //                 prev = prev[cur];
+            //                 } else {
+            //                 prev = undefined;
+            //                 }
+            //                 return prev;
+            //             }, obj),
+            //     });
+
+
+//==========================================================================
+            // var target = function () { return 'I am the target'; };
+            // var handler = {
+            //     apply: function () {
+            //         return 'I am the proxy';
+            //     }
+            // };
+
+            // var p = new Proxy(target, handler);
+
+            // console.log(p())
+//===========================================================================
+            // var handler = {
+            //     get: function(target, name) {
+            //         if (name === 'prototype') {
+            //         return Object.prototype;
+            //         }
+            //         return 'Hello, ' + name;
+            //     },
+
+            //     apply: function(target, thisBinding, args) {
+            //         return args[0];
+            //     },
+
+            //     construct: function(target, args) {
+            //         return {value: args[1]};
+            //     }
+            // };
+
+            // var fproxy = new Proxy(function(x, y) {
+            //     return x + y;
+            // }, handler);
+
+            // fproxy(1, 2) // 1
+            // new fproxy(1, 2) // {value: 2}
+            // fproxy.prototype === Object.prototype // true
+            // fproxy.foo === "Hello, foo" // true
+
+// ==========================================================================
+    const safeGetter = (obj, keys = []) =>
+        new Proxy(() => {}, {
+            get: (target, key) => {
+                console.log("get")
+                return safeGetter(obj, keys.concat(key))
+            },
+            apply: () =>
+                keys.reduce((prev, cur) => {
+                    if (prev && prev[cur]) {
+                        prev = prev[cur];
+                    } else {
+                        prev = undefined;
+                    }
+                    return prev;
+                }, obj),
+        });
+
+        const obj ={
+            person:{
+                age:18,
+                name:"xuxiaoping",
+                home:"xinghua"
+            },
+            ani:34,
+            ani2:"ani2"
+        }
+
+        // const p = safeGetter(obj,["person",'age'])
+        // console.log(p)
+        // console.log("p()", p())
+
+        // const p2 = safeGetter(obj)
+        // const person = p2.person.age;
+        // console.log("person()",person())
+        
+
+    //=================================================================
+
+        const t = function(obj,keys){
+            return keys.reduce((prev,cur) => {
+                if(prev && prev[cur]){
+                    return prev[cur]
+                }else{
+                    return undefined
+                }
+            },obj)
+        }
+        // console.log(t(obj,["person","age"]))
+    
+    //=================================================================
+const areas  = 
+            [
+                {
+                    "areaCode": "370100",
+                    "parentCode": "370000",
+                    "areaName": "济南市",
+                    "levelType": 2,
+                    "children": [
+                        {
+                            "areaCode": "370102",
+                            "parentCode": "370100",
+                            "areaName": "历下区",
+                            "levelType": 3
+                        },
+                        {
+                            "areaCode": "370103",
+                            "parentCode": "370100",
+                            "areaName": "市中区",
+                            "levelType": 3
+                        },
+                        {
+                            "areaCode": "370104",
+                            "parentCode": "370100",
+                            "areaName": "槐荫区",
+                            "levelType": 3
+                        }
+                    ]
+                }
+            ]
+
+
+    function mapKeys(object, iteratee) {
+        object = Object(object)
+        const result = {}
+
+        Object.keys(object).forEach((key) => {
+            const value = object[key]
+            result[iteratee(value, key, object)] = value
+        })
+        return result
+    }
+    
+    const convertToCascader = (arr, keysMap, childrenKey) => {
+        const replaceKeys = obj =>
+            mapKeys(obj, (value, key) => {
+                if (keysMap[key]) {
+                    return keysMap[key];
+                }
+                return key;
+            });
+
+        const mapper = subArr =>
+            subArr.map(p => {
+                if (!p[childrenKey]) {
+                    return replaceKeys(p);
+                }
+                return {
+                    ...replaceKeys(p),
+                    children: mapper(p[childrenKey]),
+                };
+            });
+
+        return mapper(arr);
+    };
+
+    // const ar = convertToCascader(areas,{areaCode:"code",areaName:"name"})
+    // console.log(ar)
+
+    //==============================================================================
+    
+    const menus = {
+        "1": {
+            "child": {
+                "1": {
+                    "child": {
+                        "1": {
+                            "child": {},
+                            "code": "supplier#app.qualification.apply",
+                            "icon": "",
+                            "id": 32,
+                            "isBlank": false,
+                            "isChecked": true,
+                            "isShow": true,
+                            "level": 3,
+                            "name": "入驻申请",
+                            "parentId": 31,
+                            "sortNum": 1,
+                            "url": "http://supplier.console.saas.weimobqa.com/supplier/#/app/9539/21416539/qualification/apply"
+                        },
+                        "2": {
+                            "child": {
+                                "1": {
+                                    "child": {},
+                                    "code": "supplier#app.qualification.edit",
+                                    "icon": "",
+                                    "id": 34,
+                                    "isBlank": false,
+                                    "isChecked": true,
+                                    "isShow": true,
+                                    "level": 4,
+                                    "name": "编辑资质",
+                                    "parentId": 33,
+                                    "sortNum": 1,
+                                    "url": "http://supplier.console.saas.weimobqa.com/supplier/#/app/9539/21416539/qualification/edit"
+                                }
+                            },
+                            "code": "supplier#app.qualification.mine",
+                            "icon": "",
+                            "id": 33,
+                            "isBlank": false,
+                            "isChecked": true,
+                            "isShow": true,
+                            "level": 3,
+                            "name": "我的资质",
+                            "parentId": 31,
+                            "sortNum": 2,
+                            "url": "http://supplier.console.saas.weimobqa.com/supplier/#/app/9539/21416539/qualification/mine"
+                        }
+                    },
+                    "code": "supplier#app.qualification",
+                    "icon": "",
+                    "id": 31,
+                    "isBlank": false,
+                    "isChecked": true,
+                    "isShow": true,
+                    "level": 2,
+                    "name": "资质管理",
+                    "parentId": 30,
+                    "sortNum": 1,
+                    "url": ""
+                }
+            },
+            "code": "",
+            "icon": "icon-dashboard",
+            "id": 30,
+            "isBlank": false,
+            "isChecked": true,
+            "isShow": true,
+            "level": 1,
+            "name": "资质",
+            "parentId": 0,
+            "sortNum": 1,
+            "url": "http://supplier.console.saas.weimobqa.com/supplier/#/app/9539/21416539/qualification/apply"
+        },
+        "2": {
+            "child": {
+                "1": {
+                    "child": {
+                        "1": {
+                            "child": {
+                                "1": {
+                                    "child": {},
+                                    "code": "supplier#app.goods.detail",
+                                    "icon": "",
+                                    "id": 11,
+                                    "isBlank": false,
+                                    "isChecked": true,
+                                    "isShow": true,
+                                    "level": 4,
+                                    "name": "商品详情",
+                                    "parentId": 10,
+                                    "sortNum": 1,
+                                    "url": "http://supplier.console.saas.weimobqa.com/supplier/#/app/9539/21416539/goods/detail"
+                                },
+                                "2": {
+                                    "child": {},
+                                    "code": "supplier#app.goods.edit",
+                                    "icon": "",
+                                    "id": 12,
+                                    "isBlank": false,
+                                    "isChecked": true,
+                                    "isShow": true,
+                                    "level": 4,
+                                    "name": "商品编辑",
+                                    "parentId": 10,
+                                    "sortNum": 2,
+                                    "url": "http://supplier.console.saas.weimobqa.com/supplier/#/app/9539/21416539/goods/edit"
+                                },
+                                "3": {
+                                    "child": {},
+                                    "code": "supplier#app.goods.import",
+                                    "icon": "",
+                                    "id": 13,
+                                    "isBlank": false,
+                                    "isChecked": true,
+                                    "isShow": true,
+                                    "level": 4,
+                                    "name": "导入商品",
+                                    "parentId": 10,
+                                    "sortNum": 3,
+                                    "url": "http://supplier.console.saas.weimobqa.com/supplier/#/app/9539/21416539/goods/import"
+                                }
+                            },
+                            "code": "supplier#app.goods.list",
+                            "icon": "",
+                            "id": 10,
+                            "isBlank": false,
+                            "isChecked": true,
+                            "isShow": true,
+                            "level": 3,
+                            "name": "商品列表",
+                            "parentId": 9,
+                            "sortNum": 1,
+                            "url": "http://supplier.console.saas.weimobqa.com/supplier/#/app/9539/21416539/goods/list"
+                        },
+                        "2": {
+                            "child": {
+                                "1": {
+                                    "child": {},
+                                    "code": "supplier#app.distribution.create",
+                                    "icon": "",
+                                    "id": 15,
+                                    "isBlank": false,
+                                    "isChecked": true,
+                                    "isShow": true,
+                                    "level": 4,
+                                    "name": "新建分销模板",
+                                    "parentId": 14,
+                                    "sortNum": 1,
+                                    "url": "http://supplier.console.saas.weimobqa.com/supplier/#/app/9539/21416539/distribution/create"
+                                },
+                                "2": {
+                                    "child": {},
+                                    "code": "supplier#app.distribution.edit",
+                                    "icon": "",
+                                    "id": 16,
+                                    "isBlank": false,
+                                    "isChecked": true,
+                                    "isShow": true,
+                                    "level": 4,
+                                    "name": "编辑分销模板",
+                                    "parentId": 14,
+                                    "sortNum": 2,
+                                    "url": "http://supplier.console.saas.weimobqa.com/supplier/#/app/9539/21416539/distribution/create"
+                                }
+                            },
+                            "code": "supplier#app.distribution.list",
+                            "icon": "",
+                            "id": 14,
+                            "isBlank": false,
+                            "isChecked": true,
+                            "isShow": true,
+                            "level": 3,
+                            "name": "分销模板",
+                            "parentId": 9,
+                            "sortNum": 2,
+                            "url": "http://supplier.console.saas.weimobqa.com/supplier/#/app/9539/21416539/distribution/list"
+                        },
+                        "3": {
+                            "child": {
+                                "1": {
+                                    "child": {},
+                                    "code": "supplier#app.freight.template.add",
+                                    "icon": "",
+                                    "id": 18,
+                                    "isBlank": false,
+                                    "isChecked": true,
+                                    "isShow": true,
+                                    "level": 4,
+                                    "name": "新建运费模板",
+                                    "parentId": 17,
+                                    "sortNum": 1,
+                                    "url": "http://supplier.console.saas.weimobqa.com/supplier/#/app/9539/21416539/freight/template/add"
+                                },
+                                "2": {
+                                    "child": {},
+                                    "code": "supplier#app.freight.template.edit",
+                                    "icon": "",
+                                    "id": 19,
+                                    "isBlank": false,
+                                    "isChecked": true,
+                                    "isShow": true,
+                                    "level": 4,
+                                    "name": "编辑运费模板",
+                                    "parentId": 17,
+                                    "sortNum": 2,
+                                    "url": "http://supplier.console.saas.weimobqa.com/supplier/#/app/9539/21416539/freight/template/edit"
+                                }
+                            },
+                            "code": "supplier#app.freight.template.list",
+                            "icon": "",
+                            "id": 17,
+                            "isBlank": false,
+                            "isChecked": true,
+                            "isShow": true,
+                            "level": 3,
+                            "name": "运费模板",
+                            "parentId": 9,
+                            "sortNum": 3,
+                            "url": "http://supplier.console.saas.weimobqa.com/supplier/#/app/9539/21416539/freight/template/list"
+                        }
+                    },
+                    "code": "supplier#app.goods",
+                    "icon": "",
+                    "id": 9,
+                    "isBlank": false,
+                    "isChecked": true,
+                    "isShow": true,
+                    "level": 2,
+                    "name": "商品管理",
+                    "parentId": 8,
+                    "sortNum": 1,
+                    "url": ""
+                }
+            },
+            "code": "",
+            "icon": "icon-goods",
+            "id": 8,
+            "isBlank": false,
+            "isChecked": true,
+            "isShow": true,
+            "level": 1,
+            "name": "商品",
+            "parentId": 0,
+            "sortNum": 2,
+            "url": "http://supplier.console.saas.weimobqa.com/supplier/#/app/9539/21416539/goods/list"
+        },
+        "3": {
+            "child": {
+                "1": {
+                    "child": {
+                        "1": {
+                            "child": {},
+                            "code": "supplier#app.stock.list",
+                            "icon": "",
+                            "id": 22,
+                            "isBlank": false,
+                            "isChecked": true,
+                            "isShow": true,
+                            "level": 3,
+                            "name": "库存列表",
+                            "parentId": 21,
+                            "sortNum": 1,
+                            "url": "http://supplier.console.saas.weimobqa.com/supplier/#/app/9539/21416539/stock"
+                        }
+                    },
+                    "code": "supplier#app.stock",
+                    "icon": "",
+                    "id": 21,
+                    "isBlank": false,
+                    "isChecked": true,
+                    "isShow": true,
+                    "level": 2,
+                    "name": "库存管理",
+                    "parentId": 20,
+                    "sortNum": 1,
+                    "url": ""
+                }
+            },
+            "code": "",
+            "icon": "icon-kucun",
+            "id": 20,
+            "isBlank": false,
+            "isChecked": true,
+            "isShow": true,
+            "level": 1,
+            "name": "库存",
+            "parentId": 0,
+            "sortNum": 3,
+            "url": "http://supplier.console.saas.weimobqa.com/supplier/#/app/9539/21416539/stock"
+        },
+        "4": {
+            "child": {
+                "1": {
+                    "child": {
+                        "1": {
+                            "child": {
+                                "1": {
+                                    "child": {},
+                                    "code": "supplier#app.order.deliver",
+                                    "icon": "",
+                                    "id": 26,
+                                    "isBlank": false,
+                                    "isChecked": true,
+                                    "isShow": true,
+                                    "level": 4,
+                                    "name": "批量发货",
+                                    "parentId": 25,
+                                    "sortNum": 1,
+                                    "url": "http://supplier.console.saas.weimobqa.com/supplier/#/app/9539/21416539/order/deliver"
+                                },
+                                "2": {
+                                    "child": {},
+                                    "code": "supplier#app.order.detail",
+                                    "icon": "",
+                                    "id": 27,
+                                    "isBlank": false,
+                                    "isChecked": true,
+                                    "isShow": true,
+                                    "level": 4,
+                                    "name": "订单详情",
+                                    "parentId": 25,
+                                    "sortNum": 2,
+                                    "url": "http://supplier.console.saas.weimobqa.com/supplier/#/app/9539/21416539/order/detail"
+                                }
+                            },
+                            "code": "supplier#app.order.list",
+                            "icon": "",
+                            "id": 25,
+                            "isBlank": false,
+                            "isChecked": true,
+                            "isShow": true,
+                            "level": 3,
+                            "name": "订单列表",
+                            "parentId": 24,
+                            "sortNum": 1,
+                            "url": "http://supplier.console.saas.weimobqa.com/supplier/#/app/9539/21416539/order/list"
+                        },
+                        "2": {
+                            "child": {
+                                "1": {
+                                    "child": {},
+                                    "code": "supplier#app.permission.detail",
+                                    "icon": "",
+                                    "id": 29,
+                                    "isBlank": false,
+                                    "isChecked": true,
+                                    "isShow": true,
+                                    "level": 4,
+                                    "name": "维权订单详情",
+                                    "parentId": 28,
+                                    "sortNum": 1,
+                                    "url": "http://supplier.console.saas.weimobqa.com/supplier/#/app/9539/21416539/permission/detail"
+                                }
+                            },
+                            "code": "supplier#app.permission.list",
+                            "icon": "",
+                            "id": 28,
+                            "isBlank": false,
+                            "isChecked": true,
+                            "isShow": true,
+                            "level": 3,
+                            "name": "维权列表",
+                            "parentId": 24,
+                            "sortNum": 2,
+                            "url": "http://supplier.console.saas.weimobqa.com/supplier/#/app/9539/21416539/permission/list"
+                        }
+                    },
+                    "code": "supplier#app.order",
+                    "icon": "",
+                    "id": 24,
+                    "isBlank": false,
+                    "isChecked": true,
+                    "isShow": true,
+                    "level": 2,
+                    "name": "订单管理",
+                    "parentId": 23,
+                    "sortNum": 1,
+                    "url": ""
+                }
+            },
+            "code": "",
+            "icon": "icon-business",
+            "id": 23,
+            "isBlank": false,
+            "isChecked": true,
+            "isShow": true,
+            "level": 1,
+            "name": "订单",
+            "parentId": 0,
+            "sortNum": 4,
+            "url": "http://supplier.console.saas.weimobqa.com/supplier/#/app/9539/21416539/order/list"
+        },
+        "5": {
+            "child": {
+                "1": {
+                    "child": {
+                        "1": {
+                            "child": {},
+                            "code": "supplier#app.finance.myaccount",
+                            "icon": "",
+                            "id": 35,
+                            "isBlank": false,
+                            "isChecked": true,
+                            "isShow": true,
+                            "level": 3,
+                            "name": "我的账户",
+                            "parentId": 2,
+                            "sortNum": 1,
+                            "url": "http://supplier.console.saas.weimobqa.com/supplier/#/app/9539/21416539/finance/myaccount"
+                        },
+                        "2": {
+                            "child": {},
+                            "code": "supplier#app.finance.dealport",
+                            "icon": "",
+                            "id": 36,
+                            "isBlank": false,
+                            "isChecked": true,
+                            "isShow": true,
+                            "level": 3,
+                            "name": "交易订单",
+                            "parentId": 2,
+                            "sortNum": 2,
+                            "url": "http://supplier.console.saas.weimobqa.com/supplier/#/app/9539/21416539/finance/dealport"
+                        },
+                        "4": {
+                            "child": {
+                                "1": {
+                                    "child": {},
+                                    "code": "supplier#app.finance.accountedit",
+                                    "icon": "",
+                                    "id": 7,
+                                    "isBlank": false,
+                                    "isChecked": true,
+                                    "isShow": true,
+                                    "level": 4,
+                                    "name": "提现账户修改",
+                                    "parentId": 3,
+                                    "sortNum": 1,
+                                    "url": "http://supplier.console.saas.weimobqa.com/supplier/#/app/9539/21416539/finance/accountedit"
+                                }
+                            },
+                            "code": "supplier#app.finance.account",
+                            "icon": "",
+                            "id": 3,
+                            "isBlank": false,
+                            "isChecked": true,
+                            "isShow": true,
+                            "level": 3,
+                            "name": "我的账户[旧]",
+                            "parentId": 2,
+                            "sortNum": 4,
+                            "url": "http://supplier.console.saas.weimobqa.com/supplier/#/app/9539/21416539/finance/account"
+                        },
+                        "5": {
+                            "child": {},
+                            "code": "supplier#app.finance.olddealport",
+                            "icon": "",
+                            "id": 4,
+                            "isBlank": false,
+                            "isChecked": true,
+                            "isShow": true,
+                            "level": 3,
+                            "name": "交易订单[旧]",
+                            "parentId": 2,
+                            "sortNum": 5,
+                            "url": "http://supplier.console.saas.weimobqa.com/supplier/#/app/9539/21416539/finance/olddealport"
+                        },
+                        "6": {
+                            "child": {},
+                            "code": "supplier#app.finance.oldrefund",
+                            "icon": "",
+                            "id": 5,
+                            "isBlank": false,
+                            "isChecked": true,
+                            "isShow": true,
+                            "level": 3,
+                            "name": "退款订单[旧]",
+                            "parentId": 2,
+                            "sortNum": 6,
+                            "url": "http://supplier.console.saas.weimobqa.com/supplier/#/app/9539/21416539/finance/oldrefund"
+                        },
+                        "7": {
+                            "child": {},
+                            "code": "supplier#app.finance.oldwithdrawport",
+                            "icon": "",
+                            "id": 6,
+                            "isBlank": false,
+                            "isChecked": true,
+                            "isShow": true,
+                            "level": 3,
+                            "name": "提现订单[旧]",
+                            "parentId": 2,
+                            "sortNum": 7,
+                            "url": "http://supplier.console.saas.weimobqa.com/supplier/#/app/9539/21416539/finance/oldwithdrawport"
+                        }
+                    },
+                    "code": "supplier#app.finance",
+                    "icon": "",
+                    "id": 2,
+                    "isBlank": false,
+                    "isChecked": true,
+                    "isShow": true,
+                    "level": 2,
+                    "name": "财务报表",
+                    "parentId": 1,
+                    "sortNum": 1,
+                    "url": ""
+                }
+            },
+            "code": "",
+            "icon": "icon-finacial",
+            "id": 1,
+            "isBlank": false,
+            "isChecked": true,
+            "isShow": true,
+            "level": 1,
+            "name": "财务",
+            "parentId": 0,
+            "sortNum": 5,
+            "url": "http://supplier.console.saas.weimobqa.com/supplier/#/app/9539/21416539/finance/account"
+        }
+    }
+    
+    const formatPathName = string => {
+        let arr = string.split('/');
+        const last = parseInt(arr[arr.length - 1], 10);
+        if (isNumber(last) && !isNaN(last)) {
+            arr = arr.slice(0, arr.length - 1);
+        }
+        return arr.join('/');
+    };
+
+    const getMenuLevel = (array, target) => {
+        const loop = arr =>
+            arr.reduce((prev, cur) => {
+                if (cur.url && cur.url.includes(formatPathName(target))) {
+                    prev = true;
+                } else if (cur.child && loop(Object.values(cur.child))) {
+                    prev = true;
+                }
+                return prev;
+            }, false);
+
+            const result = [];
+            let subArray = array;
+            do {
+                const [matched] = subArray.filter(
+                item =>
+                    (item.url && item.url.includes(formatPathName(target))) ||
+                    loop(Object.values(item.child || {}))
+                );
+
+                if (!matched) break;
+                result.push(matched);
+                subArray = Object.values(matched.child || {});
+            } while (subArray.length);
+            return result;
+        };
+
+        const pathname = "/app/9539/21416539/order/detail"
+        const nemuArr = Object.values(menus)
+        console.log(nemuArr)
+
+
+        </script>
+    </body>
+</html>

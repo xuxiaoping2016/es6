@@ -10,28 +10,70 @@
     <body>
         <script type="text/javascript">
 
-            const queuedObservers = new Set();
+        //ES6新特性：Javascript中的Reflect对象 https://www.jianshu.com/p/87eafacf51cf
+        //巧用Function.prototype.apply() https://www.jianshu.com/p/87eafacf51cf
+        //从规范去看Function.prototype.apply到底是怎么工作的？ https://www.jianshu.com/p/76ab490431dc
 
-            const observe = fn => queuedObservers.add(fn);
-            const observable = obj => new Proxy(obj, {set});
+        
+//             var myObject = {
+//   foo: 1,
+//   bar: 2,
+//   get baz() {
+//     return this.foo + this.bar;
+//   },
+// };
 
-            function set(target, key, value, receiver) {
-                const result = Reflect.set(target, key, value, receiver);
-                queuedObservers.forEach(observer => observer());
-                return result;
-            }
+// var myReceiverObject = {
+//   foo: 4,
+//   bar: 4,
+// };
 
-            const person = observable({
-                name: '张三',
-                age: 20
-            });
+// console.log(Reflect.get(myObject, 'baz', myReceiverObject))
+// console.log(Reflect.get(myObject, 'baz'))
 
-            function print() {
-                console.log(`${person.name}, ${person.age}`)
-            }
 
-            observe(print);
-            person.name = '李四';
+//=================================================================
+// var myObject = {
+//   foo: 1,
+//   set bar(value) {
+//     return this.foo = value;
+//   },
+// }
+
+// myObject.foo // 1
+
+// Reflect.set(myObject, 'foo', 2);
+// myObject.foo // 2
+
+// Reflect.set(myObject, 'bar', 3)
+// myObject.foo // 3
+// console.log(myObject.bar)
+
+//=========================================================
+
+
+const queuedObservers = new Set();
+
+const observe = fn => queuedObservers.add(fn);
+const observable = obj => new Proxy(obj, {set});
+
+function set(target, key, value, receiver) {
+    const result = Reflect.set(target, key, value, receiver);
+    queuedObservers.forEach(observer => observer());
+    return result;
+}
+
+const person = observable({
+    name: '张三',
+    age: 20
+});
+
+function print() {
+    console.log(`${person.name}, ${person.age}`)
+}
+
+observe(print);
+person.name = '李四';
 
         </script>
     </body>
