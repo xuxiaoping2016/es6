@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <base href="/" />
+    <meta charset="utf-8">
+    <meta name="theme-color" content="#000000">
+    <meta name="format-detection" content="telephone=no" />
+    <title>Promise原理</title>
+</head>
+
+<body>
+    <script type="text/javascript">
+    // 判断变量否为function
+    const isFunction = variable => typeof variable === 'function'
+
+    function Promise(fn) {
+        var state = 'pending',
+            value = null,
+            callbacks = [];
+
+        this.then = function (onFulfilled) {
+            if (state === 'pending') {
+                callbacks.push(onFulfilled);
+                return this;
+            }
+            onFulfilled(value);
+            return this;
+        };
+
+        function resolve(newValue) {
+            value = newValue;
+            state = 'fulfilled';
+            setTimeout(function () {
+                callbacks.forEach(function (callback) {
+                    callback(value);
+                });
+            }, 0);
+        }
+
+        fn(resolve);
+    }
+
+    const p = new Promise(function(resolve){
+        setTimeout(()=>resolve('hello'),3000)
+    })
+    p.then(function(res){
+        console.log('回调'+ res)
+    }).then(function(res){
+            console.log('4f'+ res)
+        })
+
+    // setTimeout(function(){
+    //     p.then(function(res){
+    //         console.log('4f'+ res)
+    //     })
+    // },4000)
+
+
+    </script>
+</body>
+
+</html>

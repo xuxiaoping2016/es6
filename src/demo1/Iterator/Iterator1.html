@@ -161,28 +161,28 @@
 
         //================================================================
 
-        let iterable = {
-            0: 'a',
-            1: 'b',
-            2: 'c',
-            length: 3,
-            [Symbol.iterator]: Array.prototype[Symbol.iterator]
-        };
-        for (let item of iterable) {
-            console.log(item); // 'a', 'b', 'c'
-        }
+        // let iterable = {
+        //     0: 'a',
+        //     1: 'b',
+        //     2: 'c',
+        //     length: 3,
+        //     [Symbol.iterator]: Array.prototype[Symbol.iterator]
+        // };
+        // for (let item of iterable) {
+        //     console.log(item); // 'a', 'b', 'c'
+        // }
 
         //================================================================
 
         //不大能理解
-        var obj = {};
+        // var obj = {};
 
-        obj[Symbol.iterator] = () => ({
-            val: 1
-        });
+        // obj[Symbol.iterator] = () => ({
+        //     val: 1
+        // });
 
 
-        [...obj] //  Uncaught TypeError: obj is not iterable
+        // [...obj] //  Uncaught TypeError: obj is not iterable
     </script>
 </body>
 

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <base href="/" />
+    <meta charset="utf-8">
+    <meta name="theme-color" content="#000000">
+    <meta name="format-detection" content="telephone=no" />
+    <title>Promise原理</title>
+</head>
+
+<body>
+    <script type="text/javascript">
+    /** 
+     * JavaScript 和 TypeScript 交叉口 —— 类型定义文件(*.d.ts) 
+        https://segmentfault.com/a/1190000011877674
+        https://www.jianshu.com/p/61ea5e0dced0
+
+    **/true
+    // 判断变量否为function
+    const isFunction = variable => typeof variable === 'function'
+
+   function Promise(fn) {
+        var state = 'pending',
+            value = null,
+            callbacks = [];
+
+        this.then = function (onFulfilled) {
+            // return this; 返回的是 this对象本身
+            return new Promise(function (resolve) {
+                handle({
+                    onFulfilled: onFulfilled || null,
+                    resolve: resolve
+                });
+            });
+        };
+
+        function handle(callback) {
+            if (state === 'pending') {
+                callbacks.push(callback);
+                return;
+            }
+            //如果then中没有传递任何东西
+            if(!callback.onFulfilled) {
+                callback.resolve(value);
+                return;
+            }
+
+            var ret = callback.onFulfilled(value);
+            callback.resolve(ret);
+        }
+
+
+        function resolve(newValue) {
+            if (newValue && (typeof newValue === 'object' || typeof newValue === 'function')) {
+                var then = newValue.then;
+                if (typeof then === 'function') {
+                    then.call(newValue, resolve);
+                    return;
+                }
+            }
+            state = 'fulfilled';
+            value = newValue;
+            setTimeout(function () {
+                callbacks.forEach(function (callback) {
+                    handle(callback);
+                });
+            }, 0);
+        }
+
+        fn(resolve);
+    }
+
+
+    const p = new Promise(function(resolve){
+        setTimeout(()=>resolve('hello'),3000)
+    })
+    p.then(function(res){
+        console.log('回调'+ res)
+        return "fdfdfdfd"
+    }).then(function(res){
+            console.log('4f'+ res)
+        })
+
+
+    </script>
+</body>
+
+</html>
