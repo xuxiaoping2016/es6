@@ -11,26 +11,26 @@
 
 <body>
     <script type="text/javascript">
-        class Point {
+        // class Point {
 
-        }
+        // }
 
-        class ColorPoint extends Point {
-            constructor(x, y, color) {
-                super(x, y); // 调用父类的constructor(x, y)
-                this.color = color;
-            }
+        // class ColorPoint extends Point {
+        //     constructor(x, y, color) {
+        //         super(x, y); // 调用父类的constructor(x, y)
+        //         this.color = color;
+        //     }
 
-            toString() {
-                return this.color + ' ' + super.toString(); // 调用父类的toString()
-            }
-        }
+        //     toString() {
+        //         return this.color + ' ' + super.toString(); // 调用父类的toString()
+        //     }
+        // }
 
-        const p = Reflect.getPrototypeOf(ColorPoint);
-        console.log(p)
-        console.log(Point)
-        console.log(p === Point)
-        console.log(ColorPoint)
+        // const p = Reflect.getPrototypeOf(ColorPoint);
+        // console.log(p)
+        // console.log(Point)
+        // console.log(p === Point)
+        // console.log(ColorPoint)
 
 
         // ==================================================
@@ -50,23 +50,23 @@
 
         // ======================================
 
-            class A {
-                constructor() {
-                    this.p = 2;
-                }
-            }
+        //     class A {
+        //         constructor() {
+        //             this.p = 2;
+        //         }
+        //     }
 
-            class B extends A {
-                constructor(props){
-                    super(props)
-                }
-                get m() {
-                    return super.p;
-                }
-            }
+        //     class B extends A {
+        //         constructor(props){
+        //             super(props)
+        //         }
+        //         get m() {
+        //             return super.p;
+        //         }
+        //     }
 
-            let b = new B();
-           console.log( b.m,b.p) // undefined
+        //     let b = new B();
+        //    console.log( b.m,b.p) // undefined
            
 
         // ========================================================
@@ -119,28 +119,28 @@
 
         // ===================================
 
-        function mix(...mixins) {
-            class Mix {}
+        // function mix(...mixins) {
+        //     class Mix {}
 
-            for (let mixin of mixins) {
-                copyProperties(Mix.prototype, mixin); // 拷贝实例属性
-                copyProperties(Mix.prototype, Reflect.getPrototypeOf(mixin)); // 拷贝原型属性
-            }
+        //     for (let mixin of mixins) {
+        //         copyProperties(Mix.prototype, mixin); // 拷贝实例属性
+        //         copyProperties(Mix.prototype, Reflect.getPrototypeOf(mixin)); // 拷贝原型属性
+        //     }
 
-            return Mix;
-        }
+        //     return Mix;
+        // }
 
-        function copyProperties(target, source) {
-            for (let key of Reflect.ownKeys(source)) {
-                if (key !== "constructor" &&
-                    key !== "prototype" &&
-                    key !== "name"
-                ) {
-                    let desc = Object.getOwnPropertyDescriptor(source, key);
-                    Object.defineProperty(target, key, desc);
-                }
-            }
-        }
+        // function copyProperties(target, source) {
+        //     for (let key of Reflect.ownKeys(source)) {
+        //         if (key !== "constructor" &&
+        //             key !== "prototype" &&
+        //             key !== "name"
+        //         ) {
+        //             let desc = Object.getOwnPropertyDescriptor(source, key);
+        //             Object.defineProperty(target, key, desc);
+        //         }
+        //     }
+        // }
     </script>
 </body>
 

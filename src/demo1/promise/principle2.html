@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <base href="/" />
+    <meta charset="utf-8">
+    <meta name="theme-color" content="#000000">
+    <meta name="format-detection" content="telephone=no" />
+    <title>Promise原理</title>
+</head>
+
+<body>
+    <script type="text/javascript">
+    // 30分钟，让你彻底明白Promise原理 https://www.jianshu.com/p/f77d8c61c69a
+    //Promise实现原理（附源码） https://www.jianshu.com/p/43de678e918a
+    // 判断变量否为function
+    const isFunction = variable => typeof variable === 'function'
+
+   function Promise(fn) {
+        var state = 'pending',
+            value = null,
+            callbacks = [];
+        
+        this.then = function (onFulfilled) {
+            return new Promise(function (resolve) {
+                handle({
+                    onFulfilled: onFulfilled || null,
+                    resolve: resolve
+                });
+            });
+        };
+
+        function handle(callback) {
+            if (state === 'pending') {
+                callbacks.push(callback);
+                return;
+            }
+            //如果then中没有传递任何东西
+            if(!callback.onFulfilled) {
+                callback.resolve(value);
+                return;
+            }
+
+            var ret = callback.onFulfilled(value);
+            callback.resolve(ret);
+        }
+
+        function resolve(newValue) {
+            if (newValue && (typeof newValue === 'object' || typeof newValue === 'function')) {
+                var then = newValue.then;
+                if (typeof then === 'function') {
+                    then.call(newValue, resolve);
+                    return;
+                }
+            }
+            state = 'fulfilled';
+            value = newValue;
+            setTimeout(function () {
+                callbacks.forEach(function (callback) {
+                    handle(callback);
+                });
+            }, 0);
+        }
+    
+        fn(resolve)
+    }
+
+const p = new Promise(function(resolve){
+        setTimeout(()=>resolve('hello'),2000)
+    })
+    p.then(function(res){
+        console.log('回调'+ res)
+        return 1
+    }).then(function(res){
+            console.log('4f'+ res)
+            return 2
+        })
+
+
+    setTimeout(() => {
+        p.then(function(res){
+            console.log('5000秒后添加的回调'+res)
+        })
+    }, 4000);
+
+
+    </script>
+</body>
+
+</html>
