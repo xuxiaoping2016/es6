@@ -26,8 +26,7 @@
             callbacks = [];
 
         this.then = function (onFulfilled) {
-            console.log('then 添加回调')
-            // return this; 返回的是 this对象本身
+            // console.log('then 添加回调')
             return new Promise(function (resolve) {
                 handle({
                     onFulfilled: onFulfilled || null,   //前一个promise的回调函数
@@ -83,21 +82,15 @@
         setTimeout(()=>resolve('hello'),2000)
     })
     p.then(function(res){
-        // console.log('回调'+ res)
+        console.log('第一回调'+ res)
         return 1
     }).then(function(res){
-        // console.log('4f'+ res)
-        return new Promise(function(resolve){
-            setTimeout(function(res){
-                console.log('nei promis')
-                resolve('neiiiii')
-            },4000)
-        })
-    })
-    
-    .then(function(res){
-        console.log('promise '+ res) //  promise neiiiii
+        console.log('第二回调'+ res)
         return 2
+    })
+    .then(function(res){
+        console.log('第三回调'+ res)
+        return 3
     })
 
 
