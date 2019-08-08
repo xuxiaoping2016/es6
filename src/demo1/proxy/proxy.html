@@ -10,21 +10,21 @@
     </head>
     <body>
         <script type="text/javascript">
-            // var obj = new Proxy({}, {
-            //     get: function (target, key, receiver) {
-            //         console.log("get",target, key, receiver)
-            //         console.log(`getting ${key}!`);
-            //         return Reflect.get(target, key, receiver);
-            //     },
-            //     set: function (target, key, value, receiver) {
-            //         console.log("set",target, key, value, receiver)
-            //         console.log(`setting ${key}!`);
-            //         return Reflect.set(target, key, value, receiver);
-            //     }
-            // });
+            var obj = new Proxy({}, {
+                get: function (target, key, receiver) {
+                    console.log("get",target, key, receiver)
+                    console.log(`getting ${key}!`);
+                    return Reflect.get(target, key, receiver);
+                },
+                set: function (target, key, value, receiver) {
+                    console.log("set",target, key, value, receiver)
+                    console.log(`setting ${key}!`);
+                    return Reflect.set(target, key, value, receiver);
+                }
+            });
 
-            // obj.count =1;
-            // console.log(obj.count)
+            obj.count =1;
+            console.log(obj.count)
 
 //=====================================================================================
             // function createArray(...elements){
@@ -49,30 +49,30 @@
 
             //====================================================================
 
-            var pipe = (function () {
-                return function (value) {
-                    var funcStack = [];
-                    var oproxy = new Proxy({} , {
-                        get : function (pipeObject, fnName) {
-                            if (fnName === 'get') {
-                                return funcStack.reduce(function (val, fn) {
-                                    return fn(val);
-                                },value);
-                            }
-                            funcStack.push(window[fnName]);
-                            return oproxy;
-                        }
-                    });
+            // var pipe = (function () {
+            //     return function (value) {
+            //         var funcStack = [];
+            //         var oproxy = new Proxy({} , {
+            //             get : function (pipeObject, fnName) {
+            //                 if (fnName === 'get') {
+            //                     return funcStack.reduce(function (val, fn) {
+            //                         return fn(val);
+            //                     },value);
+            //                 }
+            //                 funcStack.push(window[fnName]);
+            //                 return oproxy;
+            //             }
+            //         });
 
-                    return oproxy;
-                }
-            }());
+            //         return oproxy;
+            //     }
+            // }());
 
-            var double = n => n * 2;
-            var pow    = n => n * n;
-            var reverseInt = n => n.toString().split("").reverse().join("") | 0;
+            // var double = n => n * 2;
+            // var pow    = n => n * n;
+            // var reverseInt = n => n.toString().split("").reverse().join("") | 0;
 
-            pipe(3).double.pow.reverseInt.get; // 63
+            // pipe(3).double.pow.reverseInt.get; // 63
         </script>
     </body>
 </html>
