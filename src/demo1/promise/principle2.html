@@ -11,12 +11,8 @@
 
 <body>
     <script type="text/javascript">
-    /** 
-     * JavaScript 和 TypeScript 交叉口 —— 类型定义文件(*.d.ts) 
-        https://segmentfault.com/a/1190000011877674
-        https://www.jianshu.com/p/61ea5e0dced0
-
-    **/true
+    // 30分钟，让你彻底明白Promise原理 https://www.jianshu.com/p/f77d8c61c69a
+    //Promise实现原理（附源码） https://www.jianshu.com/p/43de678e918a
     // 判断变量否为function
     const isFunction = variable => typeof variable === 'function'
 
@@ -24,19 +20,17 @@
         var state = 'pending',
             value = null,
             callbacks = [];
-
-        this.then = function (onFulfilled) {
-            console.log('then 添加回调')
-            // return this; 返回的是 this对象本身
+        
+        this.then = function (onFulfilled) {
             return new Promise(function (resolve) {
                 handle({
-                    onFulfilled: onFulfilled || null,   //前一个promise的回调函数
-                    resolve: resolve       //后一个promise的resolve
+                    onFulfilled: onFulfilled || null,
+                    resolve: resolve
                 });
             });
         };
 
-        function handle(callback) {
+        function handle(callback) {
             if (state === 'pending') {
                 callbacks.push(callback);
                 return;
@@ -47,17 +41,13 @@
                 return;
             }
 
-    // 前一个promise的回调函数执行结果传递给后一个promise的resolve
             var ret = callback.onFulfilled(value);
             callback.resolve(ret);
         }
 
-
-        function resolve(newValue) {
-            console.log('newValue',newValue)
+        function resolve(newValue) {
             if (newValue && (typeof newValue === 'object' || typeof newValue === 'function')) {
-                console.log('对newValue是promise或者函数进行处理，这时状态还没有变动')
-                var then = newValue.then;
+                var then = newValue.then;
                 if (typeof then === 'function') {
                     then.call(newValue, resolve);
                     return;
@@ -66,46 +56,32 @@
             state = 'fulfilled';
             value = newValue;
             setTimeout(function () {
-                console.log('callbacks length',callbacks.length)
                 callbacks.forEach(function (callback) {
                     handle(callback);
                 });
             }, 0);
         }
-
-        fn(resolve);
+    
+        fn(resolve)
     }
 
-
-
-
-    const p = new Promise(function(resolve){
+const p = new Promise(function(resolve){
         setTimeout(()=>resolve('hello'),2000)
     })
     p.then(function(res){
-        // console.log('回调'+ res)
+        console.log('回调'+ res)
         return 1
     }).then(function(res){
-        // console.log('4f'+ res)
-        return new Promise(function(resolve){
-            setTimeout(function(res){
-                console.log('nei promis')
-                resolve('neiiiii')
-            },4000)
+            console.log('4f'+ res)
+            return 2
         })
-    })
-    
-    .then(function(res){
-        console.log('promise '+ res) //  promise neiiiii
-        return 2
-    })
 
 
-    // setTimeout(() => {
-    //     p.then(function(res){
-    //         console.log('5000秒后添加的回调'+res)
-    //     })
-    // }, 4000);
+    setTimeout(() => {
+        p.then(function(res){
+            console.log('5000秒后添加的回调'+res)
+        })
+    }, 4000);
 
 
     </script>

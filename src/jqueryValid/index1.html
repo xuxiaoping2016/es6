@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <base href="/" />
+        <meta charset="utf-8">
+        <meta name="theme-color" content="#000000">
+        <meta name="format-detection" content="telephone=no" />
+        <script src="https://cdn.bootcss.com/jquery/3.4.0/jquery.min.js"></script>
+        <script src="https://cdn.bootcss.com/jquery-validate/1.19.0/jquery.validate.min.js"></script>
+        <script src="https://cdn.bootcss.com/jquery-validate/1.19.1/localization/messages_zh.js"></script>
+        <title>jquery-validate</title>
+    </head>
+    <body>
+        <!-- 学习地址
+        https://jqueryvalidation.org/documentation/
+        https://www.cnblogs.com/xusongfeng/p/8359665.html
+        -->
+            <form class="cmxform" id="commentForm" method="get" action="">
+                <fieldset>
+                    <legend>Please provide your name, email address (won't be published) and a comment</legend>
+                    <p>
+                    <label for="cname">Name (required, at least 2 characters)</label>
+                    <input id="cname" name="name" minlength="2" type="text" required>
+                    </p>
+                    <p>
+                    <label for="cemail">E-Mail (required)</label>
+                    <input id="cemail" type="email" name="email" required>
+                    </p>
+                    <p>
+                    <label for="curl">URL (optional)</label>
+                    <input id="curl" type="url" name="url">
+                    </p>
+                    <p>
+                    <label for="ccomment">Your comment (required)</label>
+                    <textarea id="ccomment" name="comment" required></textarea>
+                    </p>
+                    <p>
+                    <input class="submit" type="submit" value="Submit">
+                    </p>
+                </fieldset>
+            </form>
+            <script>
+                $("#commentForm").validate();
+            </script>
+    </body>
+</html>
