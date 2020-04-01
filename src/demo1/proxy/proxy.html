@@ -9,70 +9,162 @@
         <title>proxy</title>
     </head>
     <body>
+        同一个拦截器，可以设置多个拦截操作<br/>
+
+        Proxy 支持的拦截操作
+        get
+        <p>set  注意，严格模式下，set代理如果没有返回true，就会报错</p>
+        <p>has has方法用来拦截HasProperty操作，即判断对象是否具有某个属性时，这个方法会生效。典型的操作就是in运算符<br/>
+            值得注意的是，has方法拦截的是HasProperty操作，而不是HasOwnProperty操作，即has方法不判断一个属性是对象自身的属性，还是继承的属性。<br/>
+            虽然for...in循环也用到了in运算符，但是has拦截对for...in循环不生效
+        </p>
+        defineProperty, deleteProperty, getOwnPropertyDescriptor
+        ownKeys
+        preventExtensions   isExtensible
+        getPrototypeOf, setPrototypeOf
+        <p>apply  apply方法拦截函数的调用、call和apply操作<br/>
+            apply方法可以接受三个参数，分别是目标对象、目标对象的上下文对象（this）和目标对象的参数数组<br/>
+        </p>
+        construct
+
+        <p>如果一个属性不可配置（configurable）且不可写（writable），则 Proxy 不能修改该属性，否则通过 Proxy 对象访问该属性会报错</p>
+
+
         <script type="text/javascript">
-            // var obj = new Proxy({}, {
-            //     get: function (target, key, receiver) {
-            //         console.log("get",target, key, receiver)
-            //         console.log(`getting ${key}!`);
-            //         return Reflect.get(target, key, receiver);
-            //     },
-            //     set: function (target, key, value, receiver) {
-            //         console.log("set",target, key, value, receiver)
-            //         console.log(`setting ${key}!`);
-            //         return Reflect.set(target, key, value, receiver);
-            //     }
-            // });
+            var obj = new Proxy({}, {
+                get: function (target, key, receiver) {
+                    console.log("get",target, key, receiver)
+                    console.log(`getting ${key}!`);
+                    return Reflect.get(target, key, receiver);
+                },
+                set: function (target, key, value, receiver) {
+                    console.log("set",target, key, value, receiver)
+                    console.log(`setting ${key}!`);
+                    return Reflect.set(target, key, value, receiver);
+                }
+            });
 
             // obj.count =1;
-            // console.log(obj.count)
+
+            // ++obj.count;
+            // obj.count++
+
 
 //=====================================================================================
-            // function createArray(...elements){
-            //     const handler = {
-            //         get : function(target,propKey,receiver){
-            //             let index = Number(propKey);
-            //             if(index < 0){
-            //                 index = target.length + index;
-            //             }
 
-            //             return Reflect.get(target,index,receiver)
-            //         }
-            //     }
 
-            //     let target = []
-            //     target.push(...elements)
-            //     return new Proxy(target,handler)
-            // }
+//=====================================================================================
+            function createArray(...elements){
+                const handler = {
+                    get : function(target,propKey,receiver){
+                        let index = Number(propKey);
+                        if(index < 0){
+                            index = target.length + index;
+                        }
+
+                        return Reflect.get(target,index,receiver)
+                    }
+                }
+
+                let target = []
+                target.push(...elements)
+                return new Proxy(target,handler)
+            }
 
             // const s = createArray("a","b","c")
             // console.log(s[-1])
 
             //====================================================================
 
-            var pipe = (function () {
-                return function (value) {
-                    var funcStack = [];
-                    var oproxy = new Proxy({} , {
-                        get : function (pipeObject, fnName) {
-                            if (fnName === 'get') {
-                                return funcStack.reduce(function (val, fn) {
-                                    return fn(val);
-                                },value);
-                            }
-                            funcStack.push(window[fnName]);
-                            return oproxy;
-                        }
-                    });
+            // var pipe = (function () {
+            //     return function (value) {
+            //         var funcStack = [];
+            //         var oproxy = new Proxy({} , {
+            //             get : function (pipeObject, fnName) {
+            //                 if (fnName === 'get') {
+            //                     return funcStack.reduce(function (val, fn) {
+            //                         return fn(val);
+            //                     },value);
+            //                 }
+            //                 funcStack.push(window[fnName]);
+            //                 return oproxy;
+            //             }
+            //         });
 
-                    return oproxy;
+            //         return oproxy;
+            //     }
+            // }());
+
+            // var double = n => n * 2;
+            // var pow    = n => n * n;
+            // var reverseInt = n => n.toString().split("").reverse().join("") | 0;
+
+            // pipe(3).double.pow.reverseInt.get; // 63
+
+        // ============================================================================
+
+        const dom = new Proxy({}, {
+        get(target, property) {
+            return function(attrs = {}, ...children) {
+            const el = document.createElement(property);
+            for (let prop of Object.keys(attrs)) {
+                el.setAttribute(prop, attrs[prop]);
+            }
+            for (let child of children) {
+                if (typeof child === 'string') {
+                child = document.createTextNode(child);
                 }
-            }());
+                el.appendChild(child);
+            }
+            return el;
+            }
+        }
+        });
 
-            var double = n => n * 2;
-            var pow    = n => n * n;
-            var reverseInt = n => n.toString().split("").reverse().join("") | 0;
+        const el = dom.div({},
+        'Hello, my name is ',
+        dom.a({href: '//example.com'}, 'Mark'),
+        '. I like:',
+        dom.ul({},
+            dom.li({}, 'The web'),
+            dom.li({}, 'Food'),
+            dom.li({}, '…actually that\'s it')
+        )
+        );
 
-            pipe(3).double.pow.reverseInt.get; // 63
+        document.body.appendChild(el);
+
+    // =======================================================================
+        // 它总是指向原始的读操作所在的那个对象
+        // 它总是指向原始的读操作所在的那个对象
+        // 它总是指向原始的读操作所在的那个对象
+    const proxy = new Proxy({}, {
+        get: function(target, key, receiver) {
+            return receiver;
+        }
+    });
+    proxy.getReceiver === proxy  // true
+
+
+    const proxy2 = new Proxy({}, {
+        get: function(target, key, receiver) {
+            return receiver;
+        }
+    });
+
+    const d = Object.create(proxy2);
+    console.log(d.a === d) // true
+    console.log(d.a == proxy2) // false;
+
+    // =======================================================================
+
+
+    // =======================================================================
+
+
+    // =======================================================================
+
+            
         </script>
     </body>
 </html>

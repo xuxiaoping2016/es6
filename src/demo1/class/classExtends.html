@@ -27,10 +27,24 @@
         }
 
         const p = Reflect.getPrototypeOf(ColorPoint);
-        console.log(p)
-        console.log(Point)
-        console.log(p === Point)
-        console.log(ColorPoint)
+        // console.log(p)
+        // console.log(Point)
+        // console.log(p === Point)
+        // console.log(ColorPoint)
+
+        // ==================================================
+        // 子类可以不写constructor（如果子类没有定义constructor方法，这个方法会被默认添加）
+        // 写了constructor，则必须在constructor方法中调用super方法，否则新建实例时会报错
+        // class Point2 { /* ... */ }
+
+        // class ColorPoint2 extends Point2 {
+        //     constructor(){
+        //         super();
+        //     }
+        // }
+
+        // let cp = new ColorPoint2();
+        // console.log(cp)
 
 
         // ==================================================
@@ -50,23 +64,42 @@
 
         // ======================================
 
-            class A {
-                constructor() {
-                    this.p = 2;
-                }
+        class A {
+            p() {
+                return 2;
             }
+        }
 
-            class B extends A {
-                constructor(props){
-                    super(props)
-                }
-                get m() {
-                    return super.p;
-                }
+        class B extends A {
+            constructor() {
+                super();
+                this.a = super.p();
+                console.log(super.p()); // 2
             }
+        }
 
-            let b = new B();
-           console.log( b.m,b.p) // undefined
+        let b = new B();
+        console.log(b.a,'......')
+
+        // ======================================
+
+        //     class A {
+        //         constructor() {
+        //             this.p = 2;
+        //         }
+        //     }
+
+        //     class B extends A {
+        //         constructor(props){
+        //             super(props)
+        //         }
+        //         get m() {
+        //             return super.p;
+        //         }
+        //     }
+
+        //     let b = new B();
+        //    console.log( b.m,b.p) // undefined
            
 
         // ========================================================

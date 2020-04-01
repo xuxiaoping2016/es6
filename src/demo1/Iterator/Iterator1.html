@@ -13,11 +13,25 @@
 
 <body>
     <script type="text/javascript">
-        // var it = makeIterator(['a', 'b']);
+        var it = makeIterator(['a', 'b']);
 
-        // it.next() // { value: "a", done: false }
-        // it.next() // { value: "b", done: false }
-        // it.next() // { value: undefined, done: true }
+        console.log(it.next()) // { value: "a", done: false }
+        console.log(it.next()) // { value: "b", done: false }
+        console.log(it.next()) // { value: undefined, done: true }
+
+        function makeIterator(arr){
+            var i = 0;
+            var len = arr.length;
+            return {
+                next(){
+                    return {
+                        value: arr[i++],done: i>len
+                    }
+                }
+            }
+        }
+
+
 
         // function makeIterator(array) {
         //     var nextIndex = 0;
