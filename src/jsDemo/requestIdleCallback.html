@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <base href="/" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+    <meta name="theme-color" content="#000000">
+    <meta name="format-detection" content="telephone=no" />
+    <title>requestIdleCallback</title>
+    <style type="text/css">
+    .btn-default {
+        display: inline-block;
+        padding: 6px 12px;
+        margin-bottom: 0;
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 1.42857143;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: middle;
+        -ms-touch-action: manipulation;
+        touch-action: manipulation;
+        cursor: pointer;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        background-image: none;
+        border: 1px solid transparent;
+        border-radius: 4px;
+        color: #333;
+        background-color: #fff;
+        border-color: #ccc;
+        margin-bottom: 10px;
+    }
+    .c-f00 {
+        color: #f00;
+    }
+    </style>
+    <script src="https://cdn.bootcss.com/jquery/3.3.0/jquery.min.js"></script>
+</head>
+
+<body>
+        <a id="btn1" class="btn-default" id="btn1" href="javascript:;">使用requestAnimationFrame，没有触发timeout</a>
+        <a id="btn2" class="btn-default" id="btn2" href="javascript:;">没for循环，触发timeout</a>
+    <div id="info"></div>
+    
+    <script type="text/javascript">
+    $(document).ready(function() {
+                      
+        var requestId = 0 ,
+            info = $("#info"),
+            html = "",
+            secs = 0;
+            
+        if(!("requestIdleCallback" in window)){
+            info.html("您的浏览器还不支持requestIdleCallback方法哦，建议使用chrome浏览器尝试~");
+            return "";
+        }
+        
+        var rAF = (function(){
+            return  window.requestAnimationFrame       ||
+                    window.webkitRequestAnimationFrame ||
+                    window.mozRequestAnimationFrame    ||
+                    function( callback ){
+                        window.setTimeout(callback, 1000 / 60);
+                    };
+        })();
+        
+        function add(t ,className){
+            info.append( '<span class = "'+(className || "")+'">'+ t +'</span><br/>');
+        }
+        
+        function cb(deadline){
+            var t = "didTimeout="+deadline.didTimeout+";<br/>timeRemaining="+deadline.timeRemaining()+";<br/>waitTime="+((new Date()).getTime() - secs);
+            add(t,"c-f00");
+        }
+        
+        function rIC(){
+            requestId = requestIdleCallback(cb,{
+                timeout:200
+            });
+        }
+        
+        function _reset(){
+            secs = new Date().getTime();
+            info.html("");
+        }
+        
+        function _cb1(){
+            _reset();
+            var i = 0,
+                len = 5;
+                      
+            function _s(){
+                if(i < len){
+                    add("i="+i);
+                    for(var m =0; m<1000;m++){
+                        add(m);
+                    }
+                    rAF(_s); //帧动画
+                    i++;
+                }
+            }
+            
+            rIC();  // 当前帧空闲时执行
+            
+            // rAF(_s);  // 帧动画开始 打印 i=0 然后当前帧还有剩余时间所以执行rIC()
+            _s();  // 打印 i=0； i++;下一帧开始rAF(_s) 打印 i=1；然后当前帧还有剩余时间所以执行rIC()
+
+            // 如果_s任务很大，则延长帧继续执行，最后才会执行rIC();
+        }
+        $("#btn1").on("click",_cb1);
+        
+
+        function _cb2(){
+            _reset();
+            var i = 0,
+                len = 10000;
+                
+            rIC();
+            // 该循环阻塞了页面渲染；
+            add("循环了10000次，1000的倍数才会显示！");
+            for(i;i<len;i++){
+                if(i%1000 == 0){
+                    add("i="+i);
+                }
+                console.log("i="+i);
+            }
+            
+            
+                      
+        }
+        $("#btn2").on("click",_cb2);
+        
+    });
+
+
+    </script>
+</body>
+
+</html>

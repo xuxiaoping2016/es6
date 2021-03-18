@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <base href="/" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+    <meta name="theme-color" content="#000000">
+    <meta name="format-detection" content="telephone=no" />
+    <title>requestIdleCallback</title>
+    <style type="text/css">
+    .btn-default {
+        display: inline-block;
+        padding: 6px 12px;
+        margin-bottom: 0;
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 1.42857143;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: middle;
+        -ms-touch-action: manipulation;
+        touch-action: manipulation;
+        cursor: pointer;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        background-image: none;
+        border: 1px solid transparent;
+        border-radius: 4px;
+        color: #333;
+        background-color: #fff;
+        border-color: #ccc;
+        margin-bottom: 10px;
+    }
+    .c-f00 {
+        color: #f00;
+    }
+    </style>
+    <script src="https://cdn.bootcss.com/jquery/3.3.0/jquery.min.js"></script>
+</head>
+
+<body>
+    <h1>requestIdleCallback测试(timeRemaining)</h1>
+    <div class="blank-area">
+        <p>rAF期间，添加了两个rIC</p>
+        <div>
+            <a id="btn1" class="btn-default" href="javascript:;">rAF简单处理帧</a>
+            <a id="btn2" class="btn-default" href="javascript:;">rAF复杂处理帧</a>
+        </div>
+        <p id="info" class="show-info"></p>
+    </div>
+    
+    <script type="text/javascript">
+    
+    $(document).ready(function() {        
+        var requestId = 0 ,
+            info = $("#info"),
+            html = "",
+            secs = 0;
+            
+        if(!("requestIdleCallback" in window)){
+            info.html("您的浏览器还不支持requestIdleCallback方法哦，建议使用chrome浏览器尝试~");
+            return "";
+        }
+        
+        var rAF = (function(){
+            return  window.requestAnimationFrame       ||
+                    window.webkitRequestAnimationFrame ||
+                    window.mozRequestAnimationFrame    ||
+                    function( callback ){
+                        window.setTimeout(callback, 1000 / 60);
+                    };
+        })();
+        
+        function add(t ,className){
+            info.append( '<span class = "'+(className || "")+'">'+ t +'</span><br/>');
+        }
+        
+        function cb1(deadline){
+            add("cb1 timeRemaining="+deadline.timeRemaining(),"c-f00");
+        }
+        
+        function cb2(deadline){
+            add("cb2 timeRemaining="+deadline.timeRemaining(),"c-f00");
+        }
+        
+        function rIC(cb){
+            requestId = requestIdleCallback(cb);
+        }
+        
+        function _cb1(){
+            
+            var i = 0,
+                len = 5;
+            
+            info.html("");
+            
+            function _s(){
+                if(i < len){
+                    add("i="+i);
+                    rAF(_s);
+                    i++;
+                }
+            }
+            
+            rIC(cb1);
+            rIC(cb2)
+            
+            rAF(_s);
+        }
+        $("#btn1").on("click",_cb1);
+        
+        function _cb2(){
+                      
+            var flag = 0,
+                len = 5,
+                eLen = 1000;
+            
+            info.html("");
+            
+            add("毎帧内处理"+eLen+"个循环！");
+                      
+            function _s(){
+                if(flag >= len){
+                    return "";
+                }
+                var i = 0;
+                      
+                for(i;i<eLen;i++){
+                    console.log("i="+i);
+                }
+                
+                flag++;
+                
+                add("第"+flag+"帧");
+                
+                rAF(_s);
+            }
+                      
+            rIC(cb1);
+            rIC(cb2)
+                      
+            rAF(_s);
+        }
+        $("#btn2").on("click",_cb2);
+        
+    });
+    </script>
+</body>
+
+</html>

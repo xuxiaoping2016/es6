@@ -11,11 +11,49 @@
 </head>
 
 <body>
+    <h3>async函数对 Generator 函数的改进</h3>
+    <p>
+        1）内置执行器<br/>
+        2) 更好的语义<br/>
+        3）更广的适用性<Br/>
+        4）返回值是 Promise。
+async函数的返回值是 Promise 对象，这比 Generator 函数的返回值是 Iterator 对象方便多了。你可以用then方法指定下一步的操作
+    </p>
+    <h3>2.基本用法</h3>
+    <p>async函数返回一个 Promise 对象，可以使用then方法添加回调函数</p>
+
+    <h3>3.语法</h3>
+    <p>async函数返回一个 Promise 对象。<br/>
+        async函数内部return语句返回的值，会成为then方法回调函数的参数<br/>
+        async函数内部抛出错误，会导致返回的 Promise 对象变为reject状态。抛出的错误对象会被catch方法回调函数接收到<br/>
+        Promise 对象的状态变化。async函数返回的 Promise 对象，必须等到内部所有await命令后面的 Promise 对象执行完，才会发生状态改变，除非遇到return语句或者抛出错误
+    </p>
+    <p>
+        await 命令<br/>
+正常情况下，await命令后面是一个 Promise 对象，返回该对象的结果。如果不是 Promise 对象，就直接返回对应的值<br/>
+另一种情况是，await命令后面是一个thenable对象（即定义了then方法的对象），那么await会将其等同于 Promise 对象<br/>
+await命令后面的 Promise 对象如果变为reject状态，则reject的参数会被catch方法的回调函数接收到<br/>
+任何一个await语句后面的 Promise 对象变为reject状态，那么整个async函数都会中断执行<br/>
+    </p>
+    <p>错误处理<Br/>
+    
+    </p>
+    <p>使用注意点:<br/>
+        第一点，前面已经说过，await命令后面的Promise对象，运行结果可能是rejected，所以最好把await命令放在try...catch代码块中<br/>
+        第二点，多个await命令后面的异步操作，如果不存在继发关系，最好让它们同时触发。<br/>
+        第三点，await命令只能用在async函数之中，如果用在普通函数，就会报错
+    </p>
+    <h3>4、 async 函数的实现原理</h3>
+    <p>
+        async 函数的实现原理，就是将 Generator 函数和自动执行器，包装在一个函数里<br/>
+
+    </p>
+    <button onclick="evt()">事件</button>
     <script type="text/javascript">
     function inter(){
         return new Promise((resolve,reject) => {
             setTimeout(()=>{
-                resolve();
+                resolve('88888');
             },1000)
         })
     }
@@ -29,6 +67,16 @@
     }
 
     // timer();
+
+
+    async function timer2(){
+        const res = await inter()
+        console.log(res)
+        return 3
+    }
+    // const p1 = timer2()
+    // p1.then(res => console.log('re',res))
+
 
     //================================================================
     async function demo1(){
@@ -47,14 +95,75 @@
     // )
 
     //================================================================
-    var ret = Promise.resolve(123);
-    console.log(ret)
-    ret.then(console.log)
+
+    class Sleep {
+        constructor(timeout) {
+            this.timeout = timeout;
+        }
+        then(resolve, reject) {
+            console.log('........')
+            const startTime = Date.now();
+            setTimeout(
+            () => resolve(Date.now() - startTime),
+            this.timeout
+            );
+        }
+    }
+
+    (async () => {
+        const sleepTime = await new Sleep(1000);
+        console.log(sleepTime);
+    })();
+    //================================================================
+    // var ret = Promise.resolve(123);
+    // console.log(ret)
+    // ret.then(console.log)
 
     //================================================================
 
+    function spawn(genF) {
+        return new Promise(function(resolve, reject) {
+            const gen = genF();
+            function step(nextF) {
+                let next;
+                try {
+                    next = nextF();
+                } catch(e) {
+                    return reject(e);
+                }
+                if(next.done) {
+                    return resolve(next.value);
+                }
+                Promise.resolve(next.value).then(function(v) {
+                    step(function() { return gen.next(v); });
+                }, function(e) {x
+                    step(function() { return gen.throw(e); });
+                });
+            }
+            step(function() { return gen.next(undefined); });
+        });
+    }
+//================================================================
+
+    function api(){
+        return new Promise((resolve,reject) => {
+            setTimeout(()=>{
+                resolve('88888');
+            },1000)
+        })
+    }
+
+    const model = () => {
+        const res = api();
+        console.log('m',res);
+        return res;
+    }
 
 
+    const evt = async () => {
+        const res = await model();
+        console.log('ev',res)
+    }
 
     //================================================================
 

@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <script crossorigin="anonymous" integrity="sha512-2JH7Mv2R04zMlUkMpX5zVXU3K+S6muG5cLzYB3rZVnflrD0WJO+v+He1NCDRCEjHGlEi7efDwEfVrQSeWhDy0A==" src="https://lib.baomitu.com/mobx/5.15.7/mobx.js"></script>
+</head>
+<body>
+    <div id="app">change</div>
+    <script>
+        class Store {
+            @observable num = 3;
+            @computed get mixed() {
+              return store.num + 1; // 依赖 observableValue
+            }
+          }
+          
+          const store = new Store();
+          autorun(reaction => {
+            console.log("autorun:", store.mixed); // 被 Derivation 依赖
+          });
+
+          document.getElementById("#app").onclick=function(){
+              const r = Math.random()*1000
+              store.num = r;
+          }
+        </script>
+</body>
+</html>
+

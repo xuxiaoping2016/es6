@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <base href="/" />
+    <meta charset="utf-8">
+    <meta name="theme-color" content="#000000">
+    <meta name="format-detection" content="telephone=no" />
+    <title></title>
+</head>
+
+<body>
+    <span id="fdfd">店家</span>
+    <script type="text/javascript">
+    function jumpToO2o2 (url,search) {
+            if(search){
+                var keys = Object.keys(search)
+                var searchStr = keys.reduce(function(cur,key){
+                    if(typeof search[key] != 'undefined'){
+                        cur += '&'+key + '=' + search[key]
+                    }
+                    return cur
+                },'')
+                if(searchStr){
+                    console.log('.........',searchStr)
+                    searchStr=searchStr.replace(/&/,'?')
+                }
+            }
+            console.log('searchStr','//' + url+(searchStr? searchStr : ''))
+            
+            return;
+            window.location.href = window.env.o2o2Domain + $rootScope.pid + '//' + url+(searchStr? searchStr : '');
+        }
+
+        const btn = document.getElementById('fdfd')
+        btn.onclick= function (){
+            var c;
+              jumpToO2o2('store/brand',{
+                a:'123',
+                b:false,
+                c:c
+              })
+        }
+    </script>
+</body>
+
+</html>

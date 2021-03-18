@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <base href="/" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+    <meta name="theme-color" content="#000000">
+    <meta name="format-detection" content="telephone=no" />
+    <title>postMessage</title>
+</head>
+
+<body>
+    <script type="text/javascript">
+        function receiveMessage(event)
+        {
+        console.log('ev',event)
+        }
+        window.addEventListener("message", receiveMessage, false);
+
+
+        setTimeout(() => {
+            window.postMessage('messageKey', '*');
+        },1000)
+    </script>
+</body>
+
+</html>

@@ -11,26 +11,27 @@
 
 <body>
     <script type="text/javascript">
-        // class Point {
+        class Point {
 
-        // }
+        }
 
-        // class ColorPoint extends Point {
-        //     constructor(x, y, color) {
-        //         super(x, y); // 调用父类的constructor(x, y)
-        //         this.color = color;
-        //     }
+        class Point2{}
+        class ColorPoint extends Point {
+            constructor(x, y, color) {
+                super(x, y); // 调用父类的constructor(x, y)
+                this.color = color;
+            }
 
-        //     toString() {
-        //         return this.color + ' ' + super.toString(); // 调用父类的toString()
-        //     }
-        // }
+            toString() {
+                return this.color + ' ' + super.toString(); // 调用父类的toString()
+            }
+        }
 
-        // const p = Reflect.getPrototypeOf(ColorPoint);
-        // console.log(p)
-        // console.log(Point)
-        // console.log(p === Point)
-        // console.log(ColorPoint)
+        const p = Reflect.getPrototypeOf(ColorPoint);
+        console.log(p)
+        console.log(Point)
+        console.log(p === Point)
+        console.log(ColorPoint)
 
         // ==================================================
         // 子类可以不写constructor（如果子类没有定义constructor方法，这个方法会被默认添加）

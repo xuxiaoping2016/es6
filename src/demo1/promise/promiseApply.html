@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <base href="/" />
+    <meta charset="utf-8">
+    <meta name="theme-color" content="#000000">
+    <meta name="format-detection" content="telephone=no" />
+    <title>Promise原理</title>
+</head>
+
+<body>
+    <script type="text/javascript">
+    const applys = () => {
+        return new Promise(function(resolve, reject){
+            setTimeout(function(){
+                const a = Math.random() * 10
+                if(a>8){
+                    resolve('大于8')
+                }else{
+                    reject('小于8')
+                }
+            },3000)
+        })
+    }
+
+
+    const b = async () => {
+       try{
+        const res = await applys()
+        console.log(res)
+       }catch(err){
+           console.log(err)
+       }
+        
+    }
+
+    b()
+
+
+    const c = () => {
+        applys().then(function(res){
+            console.log('res',res)
+        },function(err){
+            console.log('err',err)
+        })
+    }
+    c()
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <base href="/" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+    <meta name="theme-color" content="#000000">
+    <meta name="format-detection" content="telephone=no" />
+    <title>dispatchEvent</title>
+    <style type="text/css">
+    #SomeElementYouWantToAnimate{
+        width: 100px;
+        height: 100px;
+        background: #999;
+    }
+    </style>
+</head>
+
+<body>
+    <div id="SomeElementYouWantToAnimate"></div>
+    <script type="text/javascript">
+    var start = null;
+    var element = document.getElementById('SomeElementYouWantToAnimate');
+    element.style.position = 'absolute';
+
+    function step(timestamp) {
+        if (!start) start = timestamp;
+        var progress = timestamp - start;
+        element.style.left = Math.min(progress / 10, 200) + 'px';
+        if (progress < 2000) {
+            console.log('timestamp',timestamp)
+            window.requestAnimationFrame(step);
+        }
+    }
+
+    window.requestAnimationFrame(step);
+
+    </script>
+</body>
+
+</html>

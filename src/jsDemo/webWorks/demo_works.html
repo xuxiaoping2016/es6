@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <base href="/" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+    <meta name="theme-color" content="#000000">
+    <meta name="format-detection" content="telephone=no" />
+    <title>web works</title>
+</head>
+
+<body>
+    <p>Count numbers: <output id="result"></output></p>
+    <button onclick="startWorker()">Start Worker</button>
+    <button onclick="stopWorker()">Stop Worker</button>
+    <button onclick="toPostMessage()">toPostMessage</button>
+    <a href="jsDemo/postMessage" target="_blank">新窗口打开</a>
+    <br /><br />
+    
+    <script>
+        var w;
+        
+        function startWorker(){
+            if(typeof(Worker)!=="undefined"){
+            if(typeof(w)=="undefined"){
+                w=new Worker("/jsDemo/demo_workers.js");
+            }
+            w.onmessage = function (event) {
+                document.getElementById("result").innerHTML=event.data;
+            };
+            } else {
+                document.getElementById("result").innerHTML="Sorry, your browser  does not support Web Workers...";
+            }
+        }
+        
+        function stopWorker()
+        {
+            w.terminate();
+        }
+
+        // 本文件没用，只是配合测试postMessage页面的window.opener
+        function toPostMessage(){
+            window.open("jsDemo/postMessage");
+        }
+    </script>
+</body>
+
+</html>

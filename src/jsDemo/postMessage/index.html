@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <base href="/" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+    <meta name="theme-color" content="#000000">
+    <meta name="format-detection" content="telephone=no" />
+    <title>web works</title>
+</head>
+
+<body>
+    <iframe src="/jsDemo/postMessage/test1.html"></iframe>
+    <iframe src="/jsDemo/postMessage/test2.html"></iframe>
+
+    <script>
+        // window.opener
+        // var objRef = window.opener;
+        // 如果当前窗口是由另一个窗口打开的, window.opener保留了那个窗口的引用. 如果当前窗口不是由其他窗口打开的, 则该属性返回 null.
+        // https://developer.mozilla.org/zh-CN/docs/Web/API/Window/opener
+        // 引用的那个窗口脚本 声明的方法 都可以通过window.opener来引用，所以可以通过window.opener完成2个页面的参数传递；
+        // https://blog.csdn.net/u013111454/article/details/80763747
+        // console.log('window.opener', window.opener)
+
+        
+    // js的window.postMessage往不同窗口里面发送数据
+    // https://blog.csdn.net/qq503690160/article/details/87605641
+    function receiveMessage(e) {
+
+        alert(e.data);
+
+    }
+
+    window.addEventListener("message", receiveMessage, false);
+
+    </script>
+</body>
+
+</html>

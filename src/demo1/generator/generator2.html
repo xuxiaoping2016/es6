@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <base href="/" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+    <meta name="theme-color" content="#000000">
+    <meta name="format-detection" content="telephone=no" />
+    <title>Generator函数的异步应用</title>
+</head>
+
+<body>
+    <h3>1、传统用法</h3>
+    <p>
+        ES6 诞生以前，异步编程的方法，大概有下面四种。
+
+回调函数
+事件监听
+发布/订阅
+Promise 对象
+    </p>
+
+    <h3>2、基本概念</h3>
+
+    <h3>3、generator函数</h3>
+    <p>
+      1、Generator 函数是协程在 ES6 的实现，最大特点就是可以交出函数的执行权（即暂停执行）<br/> <br/>  
+      Generator 函数可以暂停执行和恢复执行，这是它能封装异步任务的根本原因<br/>
+      它还有两个特性，使它可以作为异步编程的完整解决方案：函数体内外的数据交换和错误处理机制,next返回值的 value 属性，是 Generator 函数向外输出数据；next方法还可以接受参数，向 Generator 函数体内输入数据
+    </p>
+    <p>next返回值的 value 属性，是 Generator 函数向外输出数据；next方法还可以接受参数，向 Generator 函数体内输入数据
+
+    </p>
+    <h3>4、Thunk函数</h3>
+    <p>
+        参数的传值调用和传名调用
+    </p>
+    <p>Generator 函数的流程管理</p>
+    <h3>co函数</h3>
+    <p>
+        
+    </p>
+    <script>
+function* gen(x) {
+  var y = yield x + 2;
+  return y;
+}
+
+var g = gen(1);
+console.log(g.next()) // { value: 3, done: false }
+console.log(g.next())
+
+//================================================================
+
+
+
+
+//================================================================
+
+
+//================================================================
+
+
+//================================================================
+
+
+//================================================================
+
+
+//================================================================
+    </script>
+</body>
+
+</html>

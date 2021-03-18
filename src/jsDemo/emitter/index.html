@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <base href="/" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+    <meta name="theme-color" content="#000000">
+    <meta name="format-detection" content="telephone=no" />
+    <title>emitter</title>
+</head>
+
+<body>
+    <button onclick='bind1()'>bind fn1</button>
+    <button onclick='bind2()'>bind fn2</button>
+    <button onclick='bind3()'>bind fn3</button>
+    <button onclick='once()'>once</button>
+    <button onclick='emitte()'>emit fn</button>
+    <button onclick='off()'>off fn</button>
+    <script>
+
+    function E () {
+        // Keep this empty so it's easier to inherit from
+        // (via https://github.com/lipsmack from https://github.com/scottcorgan/tiny-emitter/issues/3)
+    }
+  
+E.prototype = {
+    on: function (name, callback, ctx) { // 将绑定的事件添加到对象的e属性对象中
+        var e = this.e || (this.e = {});
+
+        (e[name] || (e[name] = [])).push({
+            fn: callback,
+            ctx: ctx
+        });
+
+        return this;
+    },
+  
+    once: function (name, callback, ctx) {
+        var self = this;
+        function listener () {
+            self.off(name, listener);
+            callback.apply(ctx, arguments);
+        };
+
+        listener._ = callback
+        return this.on(name, listener, ctx);
+    },
+  
+    emit: function (name) {
+        var data = [].slice.call(arguments, 1);
+        var evtArr = ((this.e || (this.e = {}))[name] || []).slice();
+        var i = 0;
+        var len = evtArr.length;
+
+        for (i; i < len; i++) {
+            evtArr[i].fn.apply(evtArr[i].ctx, data);
+        }
+
+        return this;
+    },
+  
+    off: function (name, callback) {
+        
+        var e = this.e || (this.e = {});
+        var evts = e[name];
+        var liveEvents = [];
+        console.log('liveEvents.length111')
+        if (evts && callback) {
+            for (var i = 0, len = evts.length; i < len; i++) {
+                if (evts[i].fn !== callback && evts[i].fn._ !== callback)
+                liveEvents.push(evts[i]);
+            }
+        }
+        console.log('liveEvents.length',liveEvents)
+      // Remove event from queue to prevent memory leak
+      // Suggested by https://github.com/lazd
+      // Ref: https://github.com/scottcorgan/tiny-emitter/commit/c6ebfaa9bc973b33d110a84a307742b7cf94c953#commitcomment-5024910
+        
+        (liveEvents.length)
+            ? e[name] = liveEvents
+            : delete e[name];
+
+        return this;
+    }
+};
+
+
+const obj = new E();
+console.log(obj)
+
+const fn1 = (a,b,c) => {
+    console.log('........',a,b,c);
+};
+const fn2 = () => console.log(2)
+const fn3 = () => console.log(3)
+const fn4 = () => console.log(4)
+
+function bind1(){
+    console.log('bind1')
+    obj.on('success', fn1)
+}
+function bind2(){
+    console.log('bind2')
+    obj.on('success', fn2)
+}
+function bind3(){
+    console.log('bind3')
+    obj.on('success', fn3)
+}
+
+function once(){
+    console.log('once')
+    obj.on('success', fn4)
+}
+
+function emitte(){
+    console.log('emit function')
+    obj.emit('success',1,2,3);
+}
+
+function off(){
+    obj.off('success');
+}
+    </script>
+</body>
+
+</html>

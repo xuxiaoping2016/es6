@@ -12,19 +12,29 @@
 
 <body>
     <script type="text/javascript">
-        console.log(({
-            [Symbol.toStringTag]: 'Foo'
-        }.toString()))
-        // "[object Foo]"
+        // console.log(({
+        //     [Symbol.toStringTag]: 'Foo'
+        // }.toString()))
+        // // "[object Foo]"
 
-        // 例二
-        class Collection {
-            get[Symbol.toStringTag]() {
-                return 'xxx';
+        // // 例二
+        // class Collection {
+        //     get[Symbol.toStringTag]() {
+        //         return 'xxx';
+        //     }
+        // }
+        // let x = new Collection();
+        // console.log(Object.prototype.toString.call(x))
+
+
+        class MyClass {
+            [Symbol.hasInstance](foo) {
+                console.log('......')
+                return foo instanceof Array;
             }
         }
-        let x = new Collection();
-        console.log(Object.prototype.toString.call(x))
+
+        [1, 2, 3] instanceof new MyClass()
     </script>
 </body>
 

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <base href="/" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+    <meta name="theme-color" content="#000000">
+    <meta name="format-detection" content="telephone=no" />
+    <title>create</title>
+</head>
+
+<body>
+    <script type="text/javascript">
+    const person = {
+        isHuman: false,
+        printIntroduction: function() {
+            console.log(`My name is ${this.name}. Am I human? ${this.isHuman}`);
+        }
+    };
+
+    const me = Object.create(person);
+
+    me.name = 'Matthew'; // "name" is a property set on "me", but not on "person"
+    me.isHuman = true; // inherited properties can be overwritten
+
+    me.printIntroduction();
+    console.log(person,person.__proto__ == Object.prototype, Object.prototype.__proto__)
+    console.log(me,me.__proto__ == person)
+
+
+    function Animal (name){
+        this.name = name;
+    }
+    const obj = new Animal('cate')
+    console.log(obj,obj.__proto__ == Animal.prototype)
+    </script>
+</body>
+
+</html>

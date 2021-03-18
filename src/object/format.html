@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <base href="/" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+    <meta name="theme-color" content="#000000">
+    <meta name="format-detection" content="telephone=no" />
+    <title>create</title>
+    <style>
+        #out{
+            width:200px;
+            height: 200px;
+            overflow: auto;
+            border:1px solid #ddd;
+        }
+    </style>
+</head>
+
+<body>
+   
+    <script type="text/javascript">
+const data = [{
+    pageId:10001,
+    pageLevel:0,
+    pageName: '页面1',
+    status:101 ,
+    updateTime:1605001393787,
+    weight:1
+},
+{
+    pageId:10004,
+    pageLevel:1,
+    pageName: '页面2',
+    status:101 ,
+    updateTime:1605001393787,
+    weight:1
+},{
+    pageId:10005,
+    pageLevel:1,
+    pageName: '页面22',
+    status:101 ,
+    updateTime:1605001393787,
+    weight:1
+},{
+    pageId:10007,
+    pageLevel:2,
+    pageName: '页面3',
+    status:101 ,
+    updateTime:1605001393787,
+    weight:1
+},{
+    pageId:10007,
+    pageLevel:3,
+    pageName: '页面4',
+    status:101 ,
+    updateTime:1605001393787,
+    weight:1
+},{
+    pageId:10007,
+    pageLevel:4,
+    pageName: '页面5',
+    status:101 ,
+    updateTime:1605001393787,
+    weight:1
+},{
+    pageId:10002,
+    pageLevel:0,
+    pageName: '页面11',
+    status:101 ,
+    updateTime:1605001393787,
+    weight:1
+},{
+    pageId:10003,
+    pageLevel:0,
+    pageName: '页面111',
+    status:101 ,
+    updateTime:1605001393787,
+    weight:1
+}]
+
+const search = (data,level) => {
+    let copy = {
+        children: data
+    }
+    let ret = null;
+    while(level > 0){
+        level --;
+        const len= copy.children.length;
+        
+        ret = copy.children[len-1];
+        copy = copy.children[len-1]
+    }
+    return ret;
+}
+
+const formatData = (data) => {
+    const result = data.reduce(function(ret,item, index){
+        if(item.pageLevel == 0){
+            ret.push(item)
+        }else{
+            const pageLevel = item.pageLevel;
+            const last = search(ret,pageLevel)
+            if(last.children){
+                last.children.push(item)
+            }else{
+                last.children = [item]
+            }
+        }
+        return ret
+    },[])
+    return result;
+}
+
+console.log(formatData(data))
+    </script>
+</body>
+
+</html>

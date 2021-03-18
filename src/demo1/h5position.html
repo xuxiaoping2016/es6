@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <base href="/" />
+        <meta charset="utf-8">
+        <meta name="theme-color" content="#000000">
+        <meta name="format-detection" content="telephone=no" />
+        <title>decorator</title>
+    </head>
+    <body>
+        <script type="text/javascript">
+        getLocation()
+        function getLocation () { // 检测是否支持地理定位 如果支持，则运行 getCurrentPosition() 方法。如果不支持，则向用户显示一段消息。
+            console.log('navigator.geolocation',navigator.geolocation)
+            if (navigator.geolocation) { // 如果getCurrentPosition()运行成功， //则向参数showPosition中规定的函数返回一个coordinates对象
+        navigator.geolocation.getCurrentPosition((position) => {
+            console.log(position)
+        }, error => {
+          switch (JSON.stringify(error.code)) {
+            case 1:
+              console.error('地理位置信息的获取失败，因为该页面没有获取地理位置信息的权限。')
+              break
+            case 2:
+              console.error('地理位置获取失败，因为至少有一个内部位置源返回一个内部错误。')
+              break
+            case 3:
+              console.error('获取地理位置的超时时长。')
+              break
+            default:
+              console.error('地理位置信息的获取失败，因为该页面没有获取地理位置信息的权限。')
+          }
+        })
+      } else {
+        console.error('对不起，您的浏览器不支持地理位置定位')
+      }
+    }
+        </script>
+    </body>
+</html>

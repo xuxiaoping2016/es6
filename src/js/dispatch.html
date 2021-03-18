@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <base href="/" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+    <meta name="theme-color" content="#000000">
+    <meta name="format-detection" content="telephone=no" />
+    <title>dispatch</title>
+</head>
+
+<body>
+    <button type="button" onclick="ret(3)">测试按钮</button>
+    <script type="text/javascript">
+        var _dispatch = function dispatch() {
+            console.log('占位  _dispatch')
+            throw new Error("Dispatching while constructing your middleware is not allowed. " + "Other middleware would not be applied to this dispatch.");
+        };
+
+        var middlewareAPI = {
+            dispatch: function dispatch() {
+                return _dispatch.apply(void 0, arguments);
+            }
+        };
+
+
+        const creatorFn = ({dispatch}) =>(a) => {
+            console.log(dispatch(a))
+        }
+        //  传递的时候尚未调用_dispatch，等click调用的时候_dispatch已经完成最新赋值
+        const ret = creatorFn(middlewareAPI) 
+        _dispatch = (a) => {
+            console.log('期望 dispatch')
+            return a;
+        };
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <base href="/" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+    <meta name="theme-color" content="#000000">
+    <meta name="format-detection" content="telephone=no" />
+    <title>MessageChannel</title>
+</head>
+
+<body>
+    <script type="text/javascript">
+    // MessageChannel 消息通道
+    // https://www.cnblogs.com/wisewrong/p/10496531.html
+    // 记录：window.MessageChannel那些事
+    // https://zhuanlan.zhihu.com/p/37589777
+    // MessageChannel是什么，怎么使用？
+    // https://www.jianshu.com/p/4f07ef18b5d7
+       var mc = new MessageChannel();
+       const port1 = mc.port1;
+       const port2 = mc.port2;
+       
+       port1.onmessage = function(d){
+           console.log(`port1接受的消息是: ${d.data}`)
+       }
+
+       port2.onmessage = function(d){
+           console.log(`port2接受的消息是: ${d.data}`)
+       }
+
+       // 发送消息
+        port1.postMessage('port1发送的消息')
+        port2.postMessage('port2发送的消息')
+    </script>
+</body>
+
+</html>

@@ -33,15 +33,18 @@
 
 
 //=================================================================
-// var myObject = {
-//   foo: 1,
-//   set bar(value) {
-//     return this.foo = value;
-//   },
-// }
+var myObject = {
+  foo: 1,
+  set bar(value) {
+    return this.foo = value;
+  },
+  get baz(){
+      return 'fff'
+  }
+}
 
 // myObject.foo // 1
-
+// console.log('myObject.bar',myObject.baz) //'fff'
 // Reflect.set(myObject, 'foo', 2);
 // myObject.foo // 2
 
@@ -50,8 +53,24 @@
 // console.log(myObject.bar)
 
 //=========================================================
+// let p = {
+//   a: 'a'
+// };
 
+// let handler = {
+//   set(target, key, value, receiver) {
+//     console.log('set');
+//     Reflect.set(target, key, value, receiver)
+//   },
+//   defineProperty(target, key, attribute) {
+//     console.log('defineProperty');
+//     Reflect.defineProperty(target, key, attribute);
+//   }
+// };
 
+// let obj = new Proxy(p, handler);
+// obj.a = 'A';
+//=========================================================
 const queuedObservers = new Set();
 
 const observe = fn => queuedObservers.add(fn);
@@ -74,6 +93,27 @@ function print() {
 
 observe(print);
 person.name = '李四';
+person.age = 3444
+
+//=========================================================
+
+
+
+
+//=========================================================
+
+
+
+
+//=========================================================
+
+
+
+
+//=========================================================
+
+
+
 
         </script>
     </body>
